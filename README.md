@@ -35,7 +35,7 @@ pip install -r requirements.txt
 
 The PyTorch package to install depends on the version of CUDA (if any) installed on your system. Please refer to their [website](https://pytorch.org/) to install the correct PyTorch package on your virtual environment.
 
-### CGTAN
+### CTGAN
 
 The `CTGAN` model depends on a fork of the original model training algorithm that can be found [here](https://github.com/spring-epfl/CTGAN)
 
