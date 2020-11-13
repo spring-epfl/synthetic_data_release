@@ -1,0 +1,19 @@
+{
+  "nIter": 25,
+  "nTargets": 50,
+  "sizeRawA": 500,
+  "nSynA": 50,
+  "nShadows": 10,
+  "sizeRawT": 300,
+  "sizeSynT": 300,
+  "nSynT": 50,
+  "sizeTargetCraft": 1,
+  "prior": {"IN":  0.5, "OUT":  0.5},
+  "generativeModels": {
+    "IndependentHistogram": [[20, 20]],
+    "BayesianNet": [[20, 20, 1]],
+    "PrivBayes": [[20, 20, 1, 1], [20, 20, 1, 0.1], [20, 20, 1, 0.01]],
+    "CTGAN": [[128, [256, 256], [256, 256], 1e-06, 100, 100]],
+    "PateGan": [[0,0], [0.01, 5], [0.1,5],[1,5]]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "columns": [
+    {
+      "name": "Age",
+      "min": 33.0,
+      "max": 35.0,
+      "type": "continuous"
+    },
+    {
+      "name": "Sex",
+      "type": "categorical",
+      "size": 2,
+      "i2s": [
+        "male",
+        "female"
+      ]
+    },
+    {
+      "name": "Job",
+      "type": "ordinal",
+      "size": 2,
+      "i2s": [
+        "unskilled",
+        "skilled"
+      ]
+    },
+    {
+      "name": "Housing",
+      "type": "categorical",
+      "size": 2,
+      "i2s": [
+        "own",
+        "rent"
+      ]
+    },
+    {
+      "name": "Saving accounts",
+      "type": "ordinal",
+      "i2s": [
+        "little",
+        "moderate"
+      ],
+      "size": 2
+    },
+    {
+      "name": "Checking account",
+      "type": "ordinal",
+      "size": 2,
+      "i2s": [
+        "little",
+        "moderate"
+      ]
+    },
+    {
+      "name": "Credit amount",
+      "type": "continuous",
+      "min": 2319.0,
+      "max": 3271.0
+    },
+    {
+      "name": "Duration",
+      "type": "continuous",
+      "min": 18.0,
+      "max": 20.0
+    },
+    {
+      "name": "Purpose",
+      "type": "categorical",
+      "size": 2,
+      "i2s": [
+        "radio/TV",
+        "car"
+      ]
+    },
+    {
+      "name": "Risk",
+      "type": "categorical",
+      "size": 2,
+      "i2s": [
+        "good",
+        "bad"
+      ]
+    }
+  ]
+}
