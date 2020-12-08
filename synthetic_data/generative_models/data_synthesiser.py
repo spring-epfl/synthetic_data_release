@@ -18,24 +18,20 @@ try:
 except RuntimeError:
     pass
 
-from generative_models.data_synthesiser_utils.datatypes.constants import *
-from generative_models.data_synthesiser_utils.datatypes.FloatAttribute import FloatAttribute
-from generative_models.data_synthesiser_utils.datatypes.IntegerAttribute import IntegerAttribute
-from generative_models.data_synthesiser_utils.datatypes.SocialSecurityNumberAttribute import SocialSecurityNumberAttribute
-from generative_models.data_synthesiser_utils.datatypes.StringAttribute import StringAttribute
-from generative_models.data_synthesiser_utils.datatypes.DateTimeAttribute import DateTimeAttribute
-from generative_models.data_synthesiser_utils.datatypes.utils.AttributeLoader import parse_json
-from generative_models.data_synthesiser_utils.utils import *
-from generative_models.generative_model import GenerativeModel
+from .data_synthesiser_utils.datatypes.constants import *
+from .data_synthesiser_utils.datatypes.FloatAttribute import FloatAttribute
+from .data_synthesiser_utils.datatypes.IntegerAttribute import IntegerAttribute
+from .data_synthesiser_utils.datatypes.SocialSecurityNumberAttribute import SocialSecurityNumberAttribute
+from .data_synthesiser_utils.datatypes.StringAttribute import StringAttribute
+from .data_synthesiser_utils.datatypes.DateTimeAttribute import DateTimeAttribute
+from .data_synthesiser_utils.datatypes.utils.AttributeLoader import parse_json
+from .data_synthesiser_utils.utils import *
+from .generative_model import GenerativeModel
 
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
+from synthetic_data.utils.logging import LOGGER
 
 PROCESSES = 16
+
 
 class IndependentHistogram(GenerativeModel):
     """ A generative model that approximates the joint data distribution as a set of independent marginals """
@@ -65,12 +61,12 @@ class IndependentHistogram(GenerativeModel):
         :return: None
         """
         assert isinstance(rawTrain, self.datatype), f'{self.__class__.__name__} expects {self.datatype} as input data but got {type(rawTrain)}'
-        logger.debug(f'Start fitting IndependentHistogram model to data of shape {rawTrain.shape}...')
+        LOGGER.debug(f'Start fitting IndependentHistogram model to data of shape {rawTrain.shape}...')
         if self.trained:
             # Make sure to delete previous data description
             self.data_describer = DataDescriber(self.category_threshold, self.histogram_bins)
         self.data_describer.describe(rawTrain)
-        logger.debug(f'Finished fitting IndependentHistogram')
+        LOGGER.debug(f'Finished fitting IndependentHistogram')
         self.trained = True
 
     def generate_samples(self, nsamples):
@@ -81,7 +77,7 @@ class IndependentHistogram(GenerativeModel):
         :return: synthetic_dataset: DataFrame: A synthetic dataset
         """
         assert self.trained, "Model must be fitted to some real data first"
-        logger.debug(f'Generate synthetic dataset of size {nsamples}')
+        LOGGER.debug(f'Generate synthetic dataset of size {nsamples}')
         all_attributes = list(self.data_describer.metadata['attribute_list'])
         synthetic_dataset = DataFrame(columns=all_attributes)
         for attr in all_attributes:
@@ -89,7 +85,7 @@ class IndependentHistogram(GenerativeModel):
             column = parse_json(attr_info)
             binning_indices = column.sample_binning_indices_in_independent_attribute_mode(nsamples)
             synthetic_dataset[attr] = column.sample_values_from_binning_indices(binning_indices)
-        logger.debug(f'Generated synthetic dataset of size {nsamples}')
+        LOGGER.debug(f'Generated synthetic dataset of size {nsamples}')
         return synthetic_dataset
 
 
@@ -127,7 +123,7 @@ class BayesianNet(GenerativeModel):
         :return: None
         """
         assert isinstance(rawTrain, self.datatype), f'{self.__class__.__name__} expects {self.datatype} as input data but got {type(rawTrain)}'
-        logger.debug(f'Start training BayesianNet on data of shape {rawTrain.shape}...')
+        LOGGER.debug(f'Start training BayesianNet on data of shape {rawTrain.shape}...')
         if self.trained:
             self.trained = False
             self.data_describer.data_description = {}
@@ -149,7 +145,7 @@ class BayesianNet(GenerativeModel):
             self.bayesian_network = self._greedy_bayes_linear(encoded_df, self.k)
         self.conditional_probabilities = self._construct_conditional_probabilities(self.bayesian_network, encoded_df)
 
-        logger.debug(f'Finished training Bayesian net')
+        LOGGER.debug(f'Finished training Bayesian net')
         self.trained = True
 
     def generate_samples(self, nsamples):
@@ -161,7 +157,7 @@ class BayesianNet(GenerativeModel):
         """
         assert self.trained, "Model must be fitted to some real data first"
 
-        logger.debug(f'Generate synthetic dataset of size {nsamples}')
+        LOGGER.debug(f'Generate synthetic dataset of size {nsamples}')
 
         all_attributes = self.data_describer.metadata['attribute_list']
         synthetic_data = DataFrame(columns=all_attributes)

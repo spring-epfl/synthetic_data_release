@@ -6,12 +6,12 @@ filterwarnings('ignore')
 from os import path
 cwd = path.dirname(__file__)
 
-from feature_sets.model_agnostic import NaiveFeatureSet
-from feature_sets.independent_histograms import HistogramFeatureSet
-from feature_sets.bayes import CorrelationsFeatureSet, BayesFeatureSet
-from generative_models.data_synthesiser import IndependentHistogram
+from synthetic_data.feature_sets.model_agnostic import NaiveFeatureSet
+from synthetic_data.feature_sets.independent_histograms import HistogramFeatureSet
+from synthetic_data.feature_sets.bayes import CorrelationsFeatureSet, BayesFeatureSet
+from synthetic_data.generative_models.data_synthesiser import IndependentHistogram
 
-from utils.datagen import load_local_data_as_df
+from synthetic_data.utils.datagen import load_local_data_as_df
 
 
 class TestFeatureSets(TestCase):

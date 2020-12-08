@@ -6,8 +6,8 @@ Copyright <2018> <dataresponsibly.com>
 Licensed under MIT License
 """
 
-from generative_models.data_synthesiser_utils.datatypes.AbstractAttribute import AbstractAttribute
-from generative_models.data_synthesiser_utils.datatypes.utils.DataType import DataType
+from .AbstractAttribute import AbstractAttribute
+from .utils.DataType import DataType
 
 
 class IntegerAttribute(AbstractAttribute):

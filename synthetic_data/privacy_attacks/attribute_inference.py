@@ -5,15 +5,9 @@ from scipy.stats import norm
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 
-from privacy_attacks.privacy_attack import PrivacyAttack
-from utils.datagen import convert_df_to_array, convert_series_to_array
-
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
+from .privacy_attack import PrivacyAttack
+from synthetic_data.utils.datagen import convert_df_to_array, convert_series_to_array
+from synthetic_data.utils.logging import LOGGER
 
 
 class AttributeInferenceAttack(PrivacyAttack):
@@ -102,7 +96,7 @@ class AttributeInferenceAttack(PrivacyAttack):
         self.coefficients = self.RegressionModel.coef_
         self.sigma = sum((synSensitive - synKnownScaled.dot(self.coefficients))**2)/(n-k)
 
-        logger.debug('Finished training regression model')
+        LOGGER.debug('Finished training regression model')
         self.trained = True
 
     def attack(self, targetKnown):

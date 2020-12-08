@@ -9,21 +9,15 @@ from pandas import DataFrame
 from pandas.api.types import is_numeric_dtype
 from multiprocessing import Pool
 
-from privacy_attacks.membership_inference import LABEL_IN, LABEL_OUT, generate_mia_shadow_data_shufflesplit
-from privacy_attacks.attribute_inference import AttributeInferenceAttackLinearRegression
-from utils.datagen import convert_df_to_array
+from synthetic_data.privacy_attacks.membership_inference import LABEL_IN, LABEL_OUT, generate_mia_shadow_data_shufflesplit
+from synthetic_data.privacy_attacks.attribute_inference import AttributeInferenceAttackLinearRegression
+from .datagen import convert_df_to_array
 
 from warnings import filterwarnings
 filterwarnings('ignore')
 
-from logging import getLogger
-from logging.config import fileConfig
+from .logging import LOGGER
 
-cwd = path.dirname(__file__)
-
-logconfig = path.join(cwd, '../logging_config.ini')
-fileConfig(logconfig)
-logger = getLogger()
 
 PROCESSES = 16
 
@@ -67,14 +61,14 @@ def get_attack_accuracy(tp, tn, nguesses):
 def get_attack_precision(fp, tp):
     try:
         return tp / (tp + fp)
-    except ZeroDivisionError as e:
+    except ZeroDivisionError:
         return .5
 
 
 def get_attack_recall(tp, fn):
     try:
         return tp / (tp + fn)
-    except ZeroDivisionError as e:
+    except ZeroDivisionError:
         return .5
 
 
@@ -88,7 +82,7 @@ def get_record_privacy_gain(privLossRawT, privLossSynT):
 
 def evaluate_mia(GenModel, attacksList, rawWithoutTargets, targetRecords, targetIDs, rawAidx, rawTindices, sizeRawT, sizeSynT, nSynT, nSynA, nShadows, metadata):
 
-    logger.info(f'Start evaluation of generative target model {GenModel.__name__} on {len(targetIDs)} targets under {len(attacksList)} different MIA models.')
+    LOGGER.info(f'Start evaluation of generative target model {GenModel.__name__} on {len(targetIDs)} targets under {len(attacksList)} different MIA models.')
 
     # Train and test MIA per target
     with Pool(processes=PROCESSES) as pool:
@@ -107,11 +101,11 @@ def evaluate_mia(GenModel, attacksList, rawWithoutTargets, targetRecords, target
 
     for res in resultsList:
         for AM in attacksList:
-            for k, v in res[AM.__name__].items():
+            for k in res[AM.__name__].keys():
                 results[AM.__name__][k].extend(res[AM.__name__][k])
 
     for AM in attacksList:
-        logger.info(f'Mean record privacy gain across {len(targetRecords)} Targets with Attack {AM.__name__}: {mean(results[AM.__name__]["RecordPrivacyGain"])}%')
+        LOGGER.info(f'Mean record privacy gain across {len(targetRecords)} Targets with Attack {AM.__name__}: {mean(results[AM.__name__]["RecordPrivacyGain"])}%')
 
     return results
 
@@ -218,7 +212,7 @@ def craft_outlier(data, size):
 
 def evaluate_ai(GenModel, rawWithoutTargets, targetRecords, targetIDs, rawA, rawTindices, sensitiveAttribute, sizeSynT, nSynT, metadata):
 
-    logger.info(f'Start evaluation of generative target model {GenModel.__name__} on {len(targetIDs)} targets under MLE-AI.')
+    LOGGER.info(f'Start evaluation of generative target model {GenModel.__name__} on {len(targetIDs)} targets under MLE-AI.')
 
     results = {'LinearRegression':
         {
@@ -236,26 +230,26 @@ def evaluate_ai(GenModel, rawWithoutTargets, targetRecords, targetIDs, rawA, raw
     }
 
     for nr, rt in enumerate(rawTindices):
-        logger.info(f'Raw target test set {nr+1}/{len(rawTindices)}')
+        LOGGER.info(f'Raw target test set {nr+1}/{len(rawTindices)}')
 
         # Get raw target test set
         rawT = rawWithoutTargets.loc[rt, :]
 
         # Get baseline from raw data
         AttackBaseline = AttributeInferenceAttackLinearRegression(sensitiveAttribute, metadata, rawA)
-        logger.info(f'Train Attack {AttackBaseline.__name__} on RawT')
+        LOGGER.info(f'Train Attack {AttackBaseline.__name__} on RawT')
         AttackBaseline.train(rawT)
 
         # Train generative model on raw data and sample synthetic copies
-        logger.info(f'Start fitting {GenModel.__class__.__name__} to RawT')
+        LOGGER.info(f'Start fitting {GenModel.__class__.__name__} to RawT')
         if GenModel.datatype is ndarray:
             rawT = convert_df_to_array(rawT, metadata)
 
         GenModel.fit(rawT)
-        logger.info(f'Sample {nSynT} copies of synthetic data from {GenModel.__class__.__name__}')
+        LOGGER.info(f'Sample {nSynT} copies of synthetic data from {GenModel.__class__.__name__}')
         synT = [GenModel.generate_samples(sizeSynT) for _ in range(nSynT)]
 
-        logger.info(f'Start Attack evaluation on SynT for {len(targetIDs)} targets')
+        LOGGER.info(f'Start Attack evaluation on SynT for {len(targetIDs)} targets')
 
         with Pool(processes=PROCESSES) as pool:
             tasks = [(s, targetRecords, targetIDs, sensitiveAttribute, AttackBaseline, metadata, rawA) for s in synT]
@@ -274,18 +268,18 @@ def worker_run_mleai(params):
     """Worker for parallel processing"""
     syn, targetRecords, targetIDs, sensitiveAttribute, AttackBaseline, metadata, rawA = params
 
-    results = {AttackBaseline.__name__:
-                {
-                    'Target': [],
-                    'TrueValue': [],
-                    'ProbCorrectPrior': [],
-                    'MLERawT': [],
-                    'SigmaRawT': [],
-                    'ProbCorrectRawT': [],
-                    'MLESynT': [],
-                    'SigmaSynT': [],
-                    'ProbCorrectSynT': []
-                }
+    results = {
+        AttackBaseline.__name__: {
+            'Target': [],
+            'TrueValue': [],
+            'ProbCorrectPrior': [],
+            'MLERawT': [],
+            'SigmaRawT': [],
+            'ProbCorrectRawT': [],
+            'MLESynT': [],
+            'SigmaSynT': [],
+            'ProbCorrectSynT': []
+        }
     }
 
 

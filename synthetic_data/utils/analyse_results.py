@@ -14,8 +14,8 @@ from husl import hex_to_husl
 from warnings import filterwarnings
 filterwarnings('ignore')
 
-from utils.evaluation_framework import get_record_privacy_gain, get_record_privacy_loss
-from utils.plot_setup import set_style, cmap_diverging, cmap_light, colours as COLOURS, pltmarkers as MARKERS
+from .evaluation_framework import get_record_privacy_gain, get_record_privacy_loss
+from .plot_setup import set_style, cmap_diverging, cmap_light, colours as COLOURS, pltmarkers as MARKERS
 set_style()
 
 FEATURESET = ['Naive', 'Histogram', 'Correlations', 'Ensemble']

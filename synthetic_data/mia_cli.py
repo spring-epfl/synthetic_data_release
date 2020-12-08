@@ -3,38 +3,49 @@ Command-line interface for running privacy evaluation under a membership inferen
 """
 
 import json
+from argparse import ArgumentParser
+from os import path
+
 from numpy import arange
 from numpy.random import choice
-from argparse import ArgumentParser
 
-from utils.datagen import load_local_data_as_df
-from utils.utils import json_numpy_serialzer
-from utils.evaluation_framework import *
+from .utils.datagen import load_local_data_as_df
+from .utils.utils import json_numpy_serialzer
+from .utils.evaluation_framework import (
+    craft_outlier,
+    evaluate_mia,
+)
 
-from feature_sets.independent_histograms import HistogramFeatureSet
-from feature_sets.model_agnostic import NaiveFeatureSet, EnsembleFeatureSet
-from feature_sets.bayes import CorrelationsFeatureSet
+from .feature_sets.independent_histograms import HistogramFeatureSet
+from .feature_sets.model_agnostic import NaiveFeatureSet, EnsembleFeatureSet
+from .feature_sets.bayes import CorrelationsFeatureSet
 
-from generative_models.ctgan import CTGAN
-from generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from generative_models.pate_gan import PateGan
+from .generative_models.ctgan import CTGAN
+from .generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
+from .generative_models.pate_gan import PateGan
 
-from privacy_attacks.membership_inference import *
+from .privacy_attacks.membership_inference import (
+    LABEL_IN,
+    LABEL_OUT,
+    MIAttackClassifier,
+    MIAttackClassifierKNN,
+    MIAttackClassifierLinearSVC,
+    MIAttackClassifierLogReg,
+    MIAttackClassifierMLP,
+    MIAttackClassifierRandomForest,
+    MIAttackClassifierSVC,
+)
 
 from warnings import filterwarnings
 filterwarnings('ignore')
 
-from logging import getLogger
-from logging.config import fileConfig
 
 cwd = path.dirname(__file__)
 
-logconfig = path.join('logging_config.ini')
-fileConfig(logconfig)
-logger = getLogger()
 
+def main():
+    """Entrypoint of the program."""
 
-if __name__ == "__main__":
     argparser = ArgumentParser()
     argparser.add_argument('--datapath', '-D', type=str, help='Relative path to cwd of a local data file')
     argparser.add_argument('--attack_model', '-AM', type=str, default='ANY', choices=['RandomForest', 'LogReg', 'LinearSVC', 'SVC', 'KNN', 'ANY'])
@@ -131,3 +142,7 @@ if __name__ == "__main__":
 
         with open(path.join(f'{args.outdir}', f'{outfile}.json'), 'w') as f:
             json.dump(results, f, indent=2, default=json_numpy_serialzer)
+
+
+if __name__ == "__main__":
+    main()
