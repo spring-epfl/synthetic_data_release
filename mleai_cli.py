@@ -10,17 +10,17 @@ from pandas import Series
 from numpy import arange
 from numpy.random import choice
 
-from .utils.utils import json_numpy_serialzer
-from .utils.datagen import load_local_data_as_df
-from .utils.evaluation_framework import (
+from synthetic_data.utils.utils import json_numpy_serialzer
+from synthetic_data.utils.datagen import load_local_data_as_df
+from synthetic_data.utils.evaluation_framework import (
     craft_outlier,
     evaluate_ai,
 )
-from .utils import evaluation_framework
+from synthetic_data.utils import evaluation_framework
 
-from .generative_models.ctgan import CTGAN
-from .generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from .generative_models.pate_gan import PateGan
+from synthetic_data.generative_models.ctgan import CTGAN
+from synthetic_data.generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
+from synthetic_data.generative_models.pate_gan import PateGan
 
 from warnings import filterwarnings
 filterwarnings('ignore')

@@ -9,22 +9,22 @@ from os import path
 from numpy import arange
 from numpy.random import choice
 
-from .utils.datagen import load_local_data_as_df
-from .utils.utils import json_numpy_serialzer
-from .utils.evaluation_framework import (
+from synthetic_data.utils.datagen import load_local_data_as_df
+from synthetic_data.utils.utils import json_numpy_serialzer
+from synthetic_data.utils.evaluation_framework import (
     craft_outlier,
     evaluate_mia,
 )
 
-from .feature_sets.independent_histograms import HistogramFeatureSet
-from .feature_sets.model_agnostic import NaiveFeatureSet, EnsembleFeatureSet
-from .feature_sets.bayes import CorrelationsFeatureSet
+from synthetic_data.feature_sets.independent_histograms import HistogramFeatureSet
+from synthetic_data.feature_sets.model_agnostic import NaiveFeatureSet, EnsembleFeatureSet
+from synthetic_data.feature_sets.bayes import CorrelationsFeatureSet
 
-from .generative_models.ctgan import CTGAN
-from .generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from .generative_models.pate_gan import PateGan
+from synthetic_data.generative_models.ctgan import CTGAN
+from synthetic_data.generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
+from synthetic_data.generative_models.pate_gan import PateGan
 
-from .privacy_attacks.membership_inference import (
+from synthetic_data.privacy_attacks.membership_inference import (
     LABEL_IN,
     LABEL_OUT,
     MIAttackClassifier,
