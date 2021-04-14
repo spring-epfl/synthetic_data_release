@@ -25,7 +25,7 @@ class TestGenerativeModel(TestCase):
     def test_independent_histogram(self):
         print('\nTest IndHist')
 
-        gm = IndependentHistogram()
+        gm = IndependentHistogram(self.metadata)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
@@ -35,55 +35,61 @@ class TestGenerativeModel(TestCase):
         print('\nTest BayNet')
 
         # Default params
-        gm = BayesianNet()
+        gm = BayesianNet(self.metadata)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
         self.assertTrue(all([c in list(synthetic_data) for c in list(self.raw)]))
+        print('Passed with default params.')
 
         # Degree > 1
-        gm = BayesianNet(k=2)
+        gm = BayesianNet(self.metadata, k=2)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
         self.assertTrue(all([c in list(synthetic_data) for c in list(self.raw)]))
+        print('Passed with degree > 1.')
 
         # Multiprocess
-        gm = BayesianNet(multiprocess=True)
+        gm = BayesianNet(self.metadata, multiprocess=True)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
         self.assertTrue(all([c in list(synthetic_data) for c in list(self.raw)]))
+        print('Passed with multi-processing.')
 
     def test_priv_bayes(self):
         print('\nTest PrivBay')
 
         # Default
-        gm = PrivBayes()
+        gm = PrivBayes(self.metadata)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
         self.assertTrue(all([c in list(synthetic_data) for c in list(self.raw)]))
+        print('Passed with default params.')
 
         # Degree > 1, decrease privacy
-        gm = PrivBayes(k=2, epsilon=10)
+        gm = PrivBayes(self.metadata, k=2, epsilon=10)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
         self.assertTrue(all([c in list(synthetic_data) for c in list(self.raw)]))
+        print('Passed with degree > 1.')
 
         # Multi-process
-        gm = PrivBayes(multiprocess=True)
+        gm = PrivBayes(self.metadata, multiprocess=True)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
         self.assertTrue(all([c in list(synthetic_data) for c in list(self.raw)]))
+        print('Passed with multiprocessing.')
 
     def test_ctgan(self):
         print('\nTest CTGAN')

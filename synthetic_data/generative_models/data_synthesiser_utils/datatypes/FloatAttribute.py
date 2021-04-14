@@ -19,7 +19,7 @@ class FloatAttribute(AbstractAttribute):
         self.is_categorical = False
         self.is_numerical = True
         self.data_type = DataType.FLOAT
-        self.data = self.data_type.astype(float)
+        self.data = self.data.astype(float)
         self.data_dropna = self.data_dropna.astype(float)
 
     def set_domain(self, domain=None):
