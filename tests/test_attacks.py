@@ -31,7 +31,7 @@ class TestAttacks(TestCase):
         self.sizeS = self.sizeR = len(self.rawTest)
         self.target = self.rawTest.iloc[1, :].to_frame().T
 
-        self.GM = IndependentHistogram()
+        self.GM = IndependentHistogram(self.metadata)
 
         self.synA, self.labelsSynA = generate_mia_shadow_data_shufflesplit(self.GM, self.target, self.rawA,
                                                                            self.sizeR, self.sizeS,
