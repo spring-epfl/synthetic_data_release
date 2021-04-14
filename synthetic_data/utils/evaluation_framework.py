@@ -3,8 +3,7 @@ Procedures for running a privacy evaluation on a generative model
 """
 
 from sklearn.metrics import roc_curve, auc
-from os import path
-from numpy import concatenate, mean, ndarray
+from numpy import concatenate, mean, ndarray, round
 from pandas import DataFrame
 from pandas.api.types import is_numeric_dtype
 from multiprocessing import Pool
@@ -105,7 +104,7 @@ def evaluate_mia(GenModel, attacksList, rawWithoutTargets, targetRecords, target
                 results[AM.__name__][k].extend(res[AM.__name__][k])
 
     for AM in attacksList:
-        LOGGER.info(f'Mean record privacy gain across {len(targetRecords)} Targets with Attack {AM.__name__}: {mean(results[AM.__name__]["RecordPrivacyGain"])}%')
+        LOGGER.info(f'Mean record privacy gain with Attack {AM.__name__}: {round(mean(results[AM.__name__]["RecordPrivacyGain"]), 2)}')
 
     return results
 
