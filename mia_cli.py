@@ -10,7 +10,7 @@ from numpy import arange
 from numpy.random import choice
 
 from synthetic_data.utils.datagen import load_local_data_as_df
-from synthetic_data.utils.utils import json_numpy_serialzer
+from synthetic_data.utils.utils import json_numpy_serialzer, setup_logger
 from synthetic_data.utils.evaluation_framework import (
     craft_outlier,
     evaluate_mia,
@@ -27,11 +27,9 @@ from synthetic_data.generative_models.pate_gan import PateGan
 from synthetic_data.privacy_attacks.membership_inference import (
     LABEL_IN,
     LABEL_OUT,
-    MIAttackClassifier,
     MIAttackClassifierKNN,
     MIAttackClassifierLinearSVC,
     MIAttackClassifierLogReg,
-    MIAttackClassifierMLP,
     MIAttackClassifierRandomForest,
     MIAttackClassifierSVC,
 )
@@ -39,8 +37,9 @@ from synthetic_data.privacy_attacks.membership_inference import (
 from warnings import filterwarnings
 filterwarnings('ignore')
 
-
 cwd = path.dirname(__file__)
+
+LOGGER = setup_logger()
 
 
 def main():
@@ -65,7 +64,7 @@ def main():
     RawDF['ID'] = [f'ID{i}' for i in arange(len(RawDF))]
     RawDF = RawDF.set_index('ID')
 
-    print(f'Loaded data {dname}:')
+    LOGGER.info(f'Loaded data {dname}:')
     print(RawDF.info())
 
     # Randomly select nt target records T = (t_1, ..., t_(nt))
@@ -107,8 +106,9 @@ def main():
         else:
             raise ValueError(f'Unknown GM {gm}')
 
+    LOGGER.info('Start: Privacy evaluation...')
     for GenModel in gmList:
-        print(f'----- {GenModel.__name__} -----')
+        print(f'-- Target Model: {GenModel.__name__} --')
 
         FeatureList = [NaiveFeatureSet(GenModel.datatype), HistogramFeatureSet(GenModel.datatype, metadata), CorrelationsFeatureSet(GenModel.datatype, metadata), EnsembleFeatureSet(GenModel.datatype, metadata)]
 
@@ -140,9 +140,12 @@ def main():
 
         outfile = f"{dname}{GenModel.__name__}MIA"
 
+        LOGGER.info(f'Write results to {outfile}')
+
         with open(path.join(f'{args.outdir}', f'{outfile}.json'), 'w') as f:
             json.dump(results, f, indent=2, default=json_numpy_serialzer)
 
+    LOGGER.info('Finished: Privacy evaluation')
 
 if __name__ == "__main__":
     main()

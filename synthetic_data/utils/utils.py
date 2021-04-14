@@ -1,11 +1,23 @@
 import json
 import random
-from os import path
-
 
 import numpy as np
 from pandas import cut, get_dummies
 from IPython.display import display_html
+
+import logging
+
+def setup_logger():
+    """Setup the logger."""
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s:%(name)s:%(levelname)s:%(message)s")
+    handler.setFormatter(formatter)
+    # logger.addHandler(handler)
+
+    return logger
 
 
 def json_numpy_serialzer(o):
