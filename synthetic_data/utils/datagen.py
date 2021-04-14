@@ -4,17 +4,12 @@ Helper functions for loading, converting, reshaping data
 
 import pandas as pd
 import json
+from os import path
 from pandas.api.types import CategoricalDtype
 
-FILLNA_VALUE_CAT = 'NaN'
+from .constants import *
 
-CATEGORICAL = "categorical"
-CONTINUOUS = "continuous"
-ORDINAL = "ordinal"
-
-COLUMN_CATEGORICAL = 'categorical_columns'
-COLUMN_CONTINUOUS = 'continuous_columns'
-COLUMN_ORDINAL = 'ordinal_columns'
+DATA_PATH = path.join(path.dirname(__file__), 'data')
 
 
 def load_local_data_as_df(filename):
@@ -22,7 +17,7 @@ def load_local_data_as_df(filename):
         metadata = json.load(f)
     dtypes = {cd['name']:_get_dtype(cd) for cd in metadata['columns']}
     df = pd.read_csv(f'{filename}.csv', dtype=dtypes)
-    metadata[COLUMN_CATEGORICAL], metadata[COLUMN_ORDINAL], metadata[COLUMN_CONTINUOUS] = _get_columns(metadata)
+    metadata['categorical_columns'], metadata['ordinal_columns'], metadata['continuous_columns'] = _get_columns(metadata)
 
     return df, metadata
 
@@ -31,7 +26,7 @@ def load_local_data_as_array(filename):
     df = pd.read_csv(f'{filename}.csv')
     with open(f'{filename}.json') as f:
         metadata = json.load(f)
-    metadata[COLUMN_CATEGORICAL], metadata[COLUMN_ORDINAL], metadata[COLUMN_CONTINUOUS] = _get_columns(metadata)
+    metadata['categorical_columns'], metadata['ordinal_columns'], metadata['continuous_columns'] = _get_columns(metadata)
 
     data = convert_df_to_array(df, metadata)
 
@@ -39,8 +34,10 @@ def load_local_data_as_array(filename):
 
 
 def _get_dtype(cd):
-    if cd['type'] == 'continuous':
+    if cd['type'] == FLOAT:
         return float
+    elif cd['type'] == INTEGER:
+        return int
     else:
         return str
 
@@ -54,7 +51,7 @@ def _get_columns(metadata):
             categorical_columns.append(column_idx)
         elif column['type'] == ORDINAL:
             ordinal_columns.append(column_idx)
-        elif column['type'] == CONTINUOUS:
+        elif column['type'] in CONTINUOUS:
             continuous_columns.append(column_idx)
 
     return categorical_columns, ordinal_columns, continuous_columns
@@ -83,7 +80,7 @@ def convert_df_to_array(df, metadata):
     for col in metadata['columns']:
         if col['name'] in list(dfcopy):
             col_data = dfcopy[col['name']]
-            if col['type'] in [CATEGORICAL, ORDINAL]:
+            if col['type'] in DISCRETE:
                 if len(col_data) > len(col_data.dropna()):
                     col_data = col_data.fillna(FILLNA_VALUE_CAT)
                     if FILLNA_VALUE_CAT not in col['i2s']:
@@ -100,7 +97,7 @@ def convert_series_to_array(scopy, metadata):
     scopy = scopy.copy()
     for col in metadata['columns']:
         if col['name'] == scopy.name:
-            if col['type'] in [CATEGORICAL, ORDINAL]:
+            if col['type'] in DISCRETE:
                 if len(scopy) > len(scopy.dropna()):
                     scopy = scopy.fillna(FILLNA_VALUE_CAT)
                     if FILLNA_VALUE_CAT not in col['i2s']:

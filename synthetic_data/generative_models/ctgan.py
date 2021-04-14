@@ -5,7 +5,6 @@ Xu et al., 2019: "Modeling Tabular data using Conditional GAN"
 Dependencies: CTGAN <https://github.com/sdv-dev/CTGAN>
 """
 
-from os import path
 from pandas import DataFrame
 
 from .generative_model import GenerativeModel

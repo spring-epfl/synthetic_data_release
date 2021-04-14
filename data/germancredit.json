@@ -4,11 +4,11 @@
       "name": "Age",
       "min": 19.0,
       "max": 75.0,
-      "type": "continuous"
+      "type": "Integer"
     },
     {
       "name": "Sex",
-      "type": "categorical",
+      "type": "Categorical",
       "size": 2,
       "i2s": [
         "male",
@@ -17,7 +17,7 @@
     },
     {
       "name": "Job",
-      "type": "ordinal",
+      "type": "Ordinal",
       "size": 4,
       "i2s": [
         "unemployed",
@@ -28,7 +28,7 @@
     },
     {
       "name": "Housing",
-      "type": "categorical",
+      "type": "Categorical",
       "size": 3,
       "i2s": [
         "own",
@@ -38,7 +38,7 @@
     },
     {
       "name": "Saving accounts",
-      "type": "ordinal",
+      "type": "Ordinal",
       "i2s": [
         "no_info",
         "little",
@@ -50,7 +50,7 @@
     },
     {
       "name": "Checking account",
-      "type": "ordinal",
+      "type": "Ordinal",
       "size": 4,
       "i2s": [
         "no_info",
@@ -61,19 +61,19 @@
     },
     {
       "name": "Credit amount",
-      "type": "continuous",
+      "type": "Continuous",
       "min": 250.0,
       "max": 18424.0
     },
     {
       "name": "Duration",
-      "type": "continuous",
+      "type": "Continuous",
       "min": 4.0,
       "max": 72.0
     },
     {
       "name": "Purpose",
-      "type": "categorical",
+      "type": "Categorical",
       "size": 8,
       "i2s": [
         "radio/TV",
@@ -88,7 +88,7 @@
     },
     {
       "name": "Risk",
-      "type": "categorical",
+      "type": "Categorical",
       "size": 2,
       "i2s": [
         "good",
