@@ -1,8 +1,8 @@
 """ Membership inference attack on synthetic data that implements the risk of linkability. """
-
+from copy import deepcopy
 from pandas import DataFrame
 from numpy import ndarray, concatenate, stack, array, round
-from os import path
+from multiprocessing.pool import Pool
 
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
@@ -12,12 +12,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import ShuffleSplit
 
+from synthetic_data.utils.constants import *
 from synthetic_data.utils.datagen import convert_df_to_array
 from synthetic_data.utils.logging import LOGGER
 from .privacy_attack import PrivacyAttack
-
-LABEL_OUT = 0
-LABEL_IN = 1
 
 
 class MIAttackClassifier(PrivacyAttack):
@@ -174,7 +172,7 @@ class MIAttackClassifierMLP(MIAttackClassifier):
         super().__init__(MLPClassifier((200,), solver='lbfgs'), metadata, priorProbabilities, FeatureSet)
 
 
-def generate_mia_shadow_data_shufflesplit(GenModel, target, rawA, sizeRaw, sizeSyn, numModels, numCopies):
+def generate_mia_shadow_data_shufflesplit(GenModel, target, rawA, sizeRaw, sizeSyn, numModels, numCopies, multiprocess=False):
     """ Procedure to train a set of shadow models on multiple training sets sampled from a reference dataset.
 
     :param GenModel: GenerativeModel: An object that implements a generative model training procedure
@@ -195,85 +193,56 @@ def generate_mia_shadow_data_shufflesplit(GenModel, target, rawA, sizeRaw, sizeS
     kf = ShuffleSplit(n_splits=numModels, train_size=sizeRaw)
     synA, labels = [], []
 
-    LOGGER.debug(f'Start training {numModels} shadow models of class {GenModel.__class__.__name__}')
+    LOGGER.debug(f'Start training {numModels} shadow models of class {GenModel.__name__}')
+    tasks = [(rawA, train_index, deepcopy(GenModel), target, sizeSyn, numCopies) for train_index, _ in kf.split(rawA)]
 
-    for train_index, _ in kf.split(rawA):
+    if multiprocess:
+        with Pool(processes=PROCESSES) as pool:
+            resultsList = pool.map(worker_train_shadow, tasks)
+    else:
+        resultsList = []
+        for task in tasks:
+            res = worker_train_shadow(task)
+            resultsList.append(res)
 
-        # Sample a new training set from the reference dataset
-        if isinstance(rawA, DataFrame):
-            rawAout = rawA.iloc[train_index]
-        else:
-            rawAout = rawA[train_index, :]
-
-        # Fit GM to raw data without target
-        GenModel.fit(rawAout)
-
-        # Generate synthetic samples from model trained without target and label as out
-        SynAout = [GenModel.generate_samples(sizeSyn) for _ in range(numCopies)]
-        synA.extend(SynAout)
-        labels.extend([LABEL_OUT for _ in range(numCopies)])
-
-        # Insert target record into training data
-        if isinstance(rawA, DataFrame):
-            rawAin = rawAout.append(target)
-        else:
-            if len(target.shape) == 1:
-                target = target.reshape(1, len(target))
-            rawAin = concatenate([rawAout, target])
-
-        # Fit generative model to raw data including target
-        GenModel.fit(rawAin)
-
-        # Generate synthetic samples from model trained on data including target
-        synthetic_in = [GenModel.generate_samples(sizeSyn) for _ in range(numCopies)]
-        synA.extend(synthetic_in)
-        labels.extend([LABEL_IN for _ in range(numCopies)])
+    for res in resultsList:
+        s, l = res
+        synA.extend(s)
+        labels.extend(l)
 
     return synA, labels
 
 
-def generate_mia_shadow_data_allin(GenModel, target, rawA, sizeSyn, numCopies):
-    """ Generate training data for the MIA from a *single* shadow model trained on the entire reference dataset at once
-
-    :param GenModel: GenerativeModel: An object that implements a generative model training procedure
-    :param target: ndarray or DataFrame: The target record
-    :param rawA: ndarray or DataFrame: Attacker's reference dataset of size n_A
-    :param sizeSyn: int: Size of the synthetic dataset the adversary will be given access to
-    :param numCopies: int: Number of synthetic training datasets sampled from the shadow model
-
-    :returns
-        :return synA: list of ndarrays or DataFrames: List of synthetic datasets
-        :return labels: list: List of labels indicating whether target was in or out
-    """
-    assert isinstance(rawA, GenModel.datatype), f"GM expectes datatype {GenModel.datatype} but got {type(rawA)}"
-    assert isinstance(target, type(rawA)), f"Mismatch of datatypes between target record and raw data"
-
-    synA, labels = [], []
-
-    LOGGER.debug(f'Start training shadow model of class {GenModel.__class__.__name__} on data of size {len(rawA)}')
+def worker_train_shadow(params):
+    rawA, train_index, GenModel, target, sizeSyn, numCopies = params
 
     # Fit GM to data without target's data
-    GenModel.fit(rawA)
+    if isinstance(rawA, DataFrame):
+        rawAout = rawA.iloc[train_index]
+    else:
+        rawAout = rawA[train_index, :]
+    GenModel.fit(rawAout)
 
     # Generate synthetic sample for data without target
-    synAout = [GenModel.generate_samples(sizeSyn) for _ in range(numCopies)]
-    synA.extend(synAout)
-    labels.extend([LABEL_OUT for _ in range(numCopies)])
+    synOut = [GenModel.generate_samples(sizeSyn) for _ in range(numCopies)]
+    labelsOut = [LABEL_OUT for _ in range(numCopies)]
 
     # Insert targets into training data
     if isinstance(rawA, DataFrame):
-        rawAin = rawA.append(target)
+        rawAin = rawAout.append(target)
     else:
         if len(target.shape) == 1:
             target = target.reshape(1, len(target))
-        rawAin = concatenate([rawA, target])
+        rawAin = concatenate([rawAout, target])
 
     # Fit generative model to data including target
     GenModel.fit(rawAin)
 
     # Generate synthetic sample for data including target
-    synAin = [GenModel.generate_samples(sizeSyn) for _ in range(numCopies)]
-    synA.extend(synAin)
-    labels.extend([LABEL_IN for _ in range(numCopies)])
+    synIn = [GenModel.generate_samples(sizeSyn) for _ in range(numCopies)]
+    labelsIn = [LABEL_IN for _ in range(numCopies)]
 
-    return synA, labels
+    syn = synOut + synIn
+    labels = labelsOut + labelsIn
+
+    return syn, labels

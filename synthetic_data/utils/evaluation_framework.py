@@ -82,7 +82,7 @@ def get_record_privacy_gain(privLossRawT, privLossSynT):
 
 def evaluate_mia(GenModel, attacksList, rawWithoutTargets, targetRecords, targetIDs, rawAidx, rawTindices, sizeRawT, sizeSynT, nSynT, nSynA, nShadows, metadata):
 
-    LOGGER.info(f'Start evaluation of generative target model {GenModel.__name__} on {len(targetIDs)} targets under {len(attacksList)} different MIA models.')
+    LOGGER.info(f'Start evaluation of target model {GenModel.__name__} on {len(targetIDs)} targets under {len(attacksList)} different MIAs.')
 
     # Train and test MIA per target
     with Pool(processes=PROCESSES) as pool:

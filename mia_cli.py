@@ -22,7 +22,6 @@ from synthetic_data.feature_sets.bayes import CorrelationsFeatureSet
 
 from synthetic_data.generative_models.ctgan import CTGAN
 from synthetic_data.generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from synthetic_data.generative_models.pate_gan import PateGan
 
 from synthetic_data.privacy_attacks.membership_inference import (
     LABEL_IN,
@@ -47,62 +46,60 @@ def main():
 
     argparser = ArgumentParser()
     argparser.add_argument('--datapath', '-D', type=str, help='Relative path to cwd of a local data file')
-    argparser.add_argument('--attack_model', '-AM', type=str, default='ANY', choices=['RandomForest', 'LogReg', 'LinearSVC', 'SVC', 'KNN', 'ANY'])
-    argparser.add_argument('--runconfig', '-RC', default='runconfig_mia.json', type=str, help='Path relative to cwd of runconfig file')
+    argparser.add_argument('--attack_model', '-AM', type=str, default='RandomForest', choices=['RandomForest', 'LogReg', 'LinearSVC', 'SVC', 'KNN', 'ANY'])
+    argparser.add_argument('--runconfig', '-RC', default='runconfig_mia_example.json', type=str, help='Path relative to cwd of runconfig file')
     argparser.add_argument('--outdir', '-O', default='outputs/test', type=str, help='Path relative to cwd for storing output files')
     args = argparser.parse_args()
 
     # Load runconfig
     with open(path.join(cwd, args.runconfig)) as f:
         runconfig = json.load(f)
-    print('Runconfig:')
-    print(runconfig)
+
+    LOGGER.info('Runconfig:')
+    print(json.dumps(runconfig, indent=2))
 
     # Load data
-    RawDF, metadata = load_local_data_as_df(path.join(cwd, args.datapath))
+    rawDF, metadata = load_local_data_as_df(path.join(cwd, args.datapath))
     dname = args.datapath.split('/')[-1]
-    RawDF['ID'] = [f'ID{i}' for i in arange(len(RawDF))]
-    RawDF = RawDF.set_index('ID')
+    rawDF['ID'] = [f'ID{i}' for i in arange(len(rawDF))]
+    rawDF = rawDF.set_index('ID')
 
     LOGGER.info(f'Loaded data {dname}:')
-    print(RawDF.info())
+    print(rawDF.info())
 
     # Randomly select nt target records T = (t_1, ..., t_(nt))
-    targetIDs = choice(list(RawDF.index), size=runconfig['nTargets'], replace=False).tolist()
-    Targets = RawDF.loc[targetIDs, :]
+    targetIDs = choice(list(rawDF.index), size=runconfig['nTargets'], replace=False).tolist()
+
+    # If specified: Add specific target records
+    if runconfig['Targets'] is not None:
+        targetIDs.extend(runconfig['Targets'])
+
+    targets = rawDF.loc[targetIDs, :]
 
     # Drop targets from sample population
-    RawDFdropT = RawDF.drop(targetIDs)
+    rawDFdropTargets = rawDF.drop(targetIDs)
 
-    # Add a crafted outlier target to the evaluation set
-    targetCraft = craft_outlier(RawDF, runconfig['sizeTargetCraft'])
-    targetIDs.extend(list(set(targetCraft.index)))
-    Targets = Targets.append(targetCraft)
+    # Sample adversary's reference dataset
+    rawAidx = choice(list(rawDFdropTargets.index), size=runconfig['sizeRawA'], replace=False).tolist()
 
-    # Sample adversary's background knowledge RawA
-    rawAidx = choice(list(RawDFdropT.index), size=runconfig['sizeRawA'], replace=False).tolist()
-
-    # Sample k independent target test sets
-    rawTindices = [choice(list(RawDFdropT.index), size=runconfig['sizeRawT'], replace=False).tolist() for nr in range(runconfig['nIter'])]
+    # Sample k independent target model training sets
+    rawTindices = [choice(list(rawDFdropTargets.index), size=runconfig['sizeRawT'], replace=False).tolist() for nr in range(runconfig['nIter'])]
 
     # List of candidate generative models to evaluate
     gmList = []
     for gm, paramsList in runconfig['generativeModels'].items():
         if gm == 'IndependentHistogram':
             for params in paramsList:
-                gmList.append(IndependentHistogram(*params))
+                gmList.append(IndependentHistogram(metadata, *params))
         elif gm == 'BayesianNet':
             for params in paramsList:
-                gmList.append(BayesianNet(*params))
+                gmList.append(BayesianNet(metadata, *params))
         elif gm == 'PrivBayes':
             for params in paramsList:
-                gmList.append(PrivBayes(*params))
+                gmList.append(PrivBayes(metadata, *params))
         elif gm == 'CTGAN':
             for params in paramsList:
                 gmList.append(CTGAN(metadata, *params))
-        elif gm == 'PateGan':
-            for params in paramsList:
-                gmList.append(PateGan(metadata, *params))
         else:
             raise ValueError(f'Unknown GM {gm}')
 
@@ -134,7 +131,7 @@ def main():
             raise ValueError(f'Unknown AM {args.attack_model}')
 
         # Run privacy evaluation under MIA adversary
-        results = evaluate_mia(GenModel, AttacksList, RawDFdropT, Targets, targetIDs, rawAidx, rawTindices,
+        results = evaluate_mia(GenModel, AttacksList, rawDFdropTargets, targets, targetIDs, rawAidx, rawTindices,
                                runconfig['sizeRawT'], runconfig['sizeSynT'], runconfig['nSynT'],
                                runconfig['nSynA'], runconfig['nShadows'], metadata)
 

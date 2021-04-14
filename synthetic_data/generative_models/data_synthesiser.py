@@ -29,8 +29,6 @@ from .generative_model import GenerativeModel
 from synthetic_data.utils.logging import LOGGER
 from synthetic_data.utils.constants import *
 
-PROCESSES = 16
-
 
 class IndependentHistogram(GenerativeModel):
     """ A generative model that approximates the joint data distribution as a set of independent marginals """
