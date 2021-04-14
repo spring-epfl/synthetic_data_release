@@ -10,12 +10,12 @@ cwd = path.dirname(__file__)
 from numpy import all
 from sklearn.model_selection import train_test_split
 
-from privacy_attacks.membership_inference import *
-from privacy_attacks.attribute_inference import *
+from synthetic_data.privacy_attacks.membership_inference import *
+from synthetic_data.privacy_attacks.attribute_inference import *
 
-from generative_models.data_synthesiser import IndependentHistogram
-from feature_sets.model_agnostic import NaiveFeatureSet
-from utils.datagen import load_local_data_as_df
+from synthetic_data.generative_models.data_synthesiser import IndependentHistogram
+from synthetic_data.feature_sets.model_agnostic import NaiveFeatureSet
+from synthetic_data.utils.datagen import load_local_data_as_df
 
 NUM_SHADOWS = 2
 NUM_SYN_COPIES = 10

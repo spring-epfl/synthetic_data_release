@@ -4,16 +4,10 @@ from pandas import DataFrame
 from numpy import ndarray, nanmean, nanmedian, nanvar, array, concatenate
 from pandas.api.types import is_numeric_dtype, CategoricalDtype
 
-from feature_sets.feature_set import FeatureSet
-from feature_sets.independent_histograms import HistogramFeatureSet
-from feature_sets.bayes import CorrelationsFeatureSet
+from .feature_set import FeatureSet
+from .independent_histograms import HistogramFeatureSet
+from .bayes import CorrelationsFeatureSet
 
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
 
 class NaiveFeatureSet(FeatureSet):
     def __init__(self, datatype):

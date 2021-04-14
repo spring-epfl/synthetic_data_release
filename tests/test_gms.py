@@ -7,12 +7,12 @@ filterwarnings('ignore')
 from os import path
 cwd = path.dirname(__file__)
 
-from generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from generative_models.ctgan import CTGAN
-from generative_models.pate_gan import PateGan
+from synthetic_data.generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
+from synthetic_data.generative_models.ctgan import CTGAN
+from synthetic_data.generative_models.pate_gan import PateGan
 
 
-from utils.datagen import *
+from synthetic_data.utils.datagen import *
 
 
 class TestGenerativeModel(TestCase):

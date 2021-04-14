@@ -3,15 +3,10 @@ from pandas import DataFrame
 from numpy import ndarray, array, linspace, all, histogram, bincount
 from pandas.api.types import CategoricalDtype
 
-from feature_sets.feature_set import FeatureSet
-from utils.datagen import CATEGORICAL, CONTINUOUS, ORDINAL
+from .feature_set import FeatureSet
+from synthetic_data.utils.datagen import CATEGORICAL, CONTINUOUS, ORDINAL
 
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
+from synthetic_data.utils.logging import LOGGER
 
 
 class HistogramFeatureSet(FeatureSet):
@@ -40,7 +35,8 @@ class HistogramFeatureSet(FeatureSet):
             self.histogram_bins[col['name']] = linspace(col['min'], col['max'], nbins+1)
             self.nfeatures += nbins
 
-        logger.debug(f'Feature set will length {self.nfeatures}')
+        LOGGER.debug(f'Feature set will length {self.nfeatures}')
+
 
     def extract(self, data):
         assert isinstance(data, self.datatype), f'Feature extraction expects {self.datatype} as input type'

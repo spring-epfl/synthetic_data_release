@@ -8,7 +8,7 @@ Dependencies: CTGAN <https://github.com/sdv-dev/CTGAN>
 from os import path
 from pandas import DataFrame
 
-from generative_models.generative_model import GenerativeModel
+from .generative_model import GenerativeModel
 from ctgan import CTGANSynthesizer
 
 import torch
@@ -19,12 +19,8 @@ try:
 except RuntimeError:
     pass
 
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
+from synthetic_data.utils.logging import LOGGER
+
 
 class CTGAN(GenerativeModel):
     """
@@ -61,10 +57,10 @@ class CTGAN(GenerativeModel):
         """
         assert isinstance(rawTrain, self.datatype), f'{self.__class__.__name__} expects {self.datatype} as input data but got {type(rawTrain)}'
 
-        logger.debug(f'Start fitting {self.__class__.__name__} to data of shape {rawTrain.shape}...')
+        LOGGER.debug(f'Start fitting {self.__class__.__name__} to data of shape {rawTrain.shape}...')
         self.synthesiser.fit(rawTrain, self.metadata)
 
-        logger.debug(f'Finished fitting')
+        LOGGER.debug(f'Finished fitting')
         self.trained = True
 
     def generate_samples(self, nsamples):
@@ -76,7 +72,7 @@ class CTGAN(GenerativeModel):
         """
         assert self.trained, "Model must first be fitted to some data."
 
-        logger.debug(f'Generate synthetic dataset of size {nsamples}')
+        LOGGER.debug(f'Generate synthetic dataset of size {nsamples}')
         synData = self.synthesiser.sample(nsamples)
 
         return synData

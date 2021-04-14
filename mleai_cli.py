@@ -4,33 +4,36 @@ Command-line interface for running privacy evaluation under a membership inferen
 
 import json
 from argparse import ArgumentParser
+from os import path
+
 from pandas import Series
 from numpy import arange
 from numpy.random import choice
 
-from utils.utils import json_numpy_serialzer
-from utils.datagen import load_local_data_as_df
-from utils.evaluation_framework import *
+from synthetic_data.utils.utils import json_numpy_serialzer
+from synthetic_data.utils.datagen import load_local_data_as_df
+from synthetic_data.utils.evaluation_framework import (
+    craft_outlier,
+    evaluate_ai,
+)
+from synthetic_data.utils import evaluation_framework
 
-from generative_models.ctgan import CTGAN
-from generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from generative_models.pate_gan import PateGan
+from synthetic_data.generative_models.ctgan import CTGAN
+from synthetic_data.generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
+from synthetic_data.generative_models.pate_gan import PateGan
 
 from warnings import filterwarnings
 filterwarnings('ignore')
 
-from logging import getLogger
-from logging.config import fileConfig
-
 cwd = path.dirname(__file__)
 
-logconfig = path.join('logging_config.ini')
-fileConfig(logconfig)
-logger = getLogger()
 
-PROCESSES = 16
+evaluation_framework.PROCESSES = 16
 
-if __name__ == "__main__":
+
+def main():
+    """Entrypoint of the program."""
+
     argparser = ArgumentParser()
     argparser.add_argument('--datapath', '-D', type=str, help='Relative path to cwd of a local data file')
     argparser.add_argument('--runconfig', '-RC', default='runconfig_mleai_credit_duration.json', type=str, help='Path relative to cwd of runconfig file')
@@ -112,3 +115,6 @@ if __name__ == "__main__":
         with open(path.join(f'{args.outdir}', f'{outfile}.json'), 'w') as f:
             json.dump(results, f, indent=2, default=json_numpy_serialzer)
 
+
+if __name__ == "__main__":
+    main()

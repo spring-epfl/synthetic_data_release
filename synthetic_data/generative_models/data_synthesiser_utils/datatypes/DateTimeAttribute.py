@@ -12,9 +12,9 @@ import numpy as np
 from dateutil.parser import parse
 from pandas import concat
 
-from generative_models.data_synthesiser_utils.datatypes.AbstractAttribute import AbstractAttribute
-from generative_models.data_synthesiser_utils.datatypes.utils.DataType import DataType
-from generative_models.data_synthesiser_utils.utils import normalize_given_distribution
+from .AbstractAttribute import AbstractAttribute
+from .utils.DataType import DataType
+from synthetic_data.generative_models.data_synthesiser_utils.utils import normalize_given_distribution
 
 
 def is_datetime(value: str):

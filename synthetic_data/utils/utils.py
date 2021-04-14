@@ -8,14 +8,6 @@ from pandas import cut, get_dummies
 from IPython.display import display_html
 
 
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger()
-
-
 def json_numpy_serialzer(o):
     """ Serialize numpy types for json
 
@@ -84,8 +76,10 @@ def preprocess_germancredit(df):
 
     # Dummy encode categorical variables
     for c in list(df.select_dtypes(['object', 'category'])):
-        df = df.merge(get_dummies(df[c], drop_first=True, prefix=c.split(' ')[0]),
-                                      left_index=True, right_index=True)
+        df = df.merge(
+            get_dummies(df[c], drop_first=True, prefix=c.split(' ')[0]),
+            left_index=True, right_index=True
+        )
         df = df.drop(c, axis=1)
 
     return df
@@ -115,8 +109,10 @@ def preprocess_adult(df):
 
     # Dummy encode categorical variables
     for c in cat_cols:
-        df = df.merge(get_dummies(df[c], drop_first=True, prefix=c.split(' ')[0]),
-                      left_index=True, right_index=True)
+        df = df.merge(
+            get_dummies(df[c], drop_first=True, prefix=c.split(' ')[0]),
+            left_index=True, right_index=True
+        )
         df = df.drop(c, axis=1)
 
     return df.dropna()
@@ -126,8 +122,10 @@ def encode_df(df, drop_first=True):
     cat_cols = list(df.select_dtypes(['object', 'category']))
 
     for c in cat_cols:
-        df = df.merge(get_dummies(df[c], drop_first=drop_first, prefix=c.split(' ')[0], prefix_sep=' '),
-                        left_index=True, right_index=True)
+        df = df.merge(
+            get_dummies(df[c], drop_first=drop_first, prefix=c.split(' ')[0], prefix_sep=' '),
+            left_index=True, right_index=True
+        )
         df = df.drop(c, axis=1)
 
     return df.dropna()

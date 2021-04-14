@@ -8,13 +8,13 @@ Licensed under MIT License
 
 from pandas import Series
 
-from generative_models.data_synthesiser_utils.datatypes.DateTimeAttribute import DateTimeAttribute
-from generative_models.data_synthesiser_utils.datatypes.FloatAttribute import FloatAttribute
-from generative_models.data_synthesiser_utils.datatypes.IntegerAttribute import IntegerAttribute
-from generative_models.data_synthesiser_utils.datatypes.SocialSecurityNumberAttribute import SocialSecurityNumberAttribute
-from generative_models.data_synthesiser_utils.datatypes.StringAttribute import StringAttribute
-from generative_models.data_synthesiser_utils.datatypes.utils.DataType import DataType
-from generative_models.data_synthesiser_utils.datatypes.constants import *
+from synthetic_data.generative_models.data_synthesiser_utils.datatypes.DateTimeAttribute import DateTimeAttribute
+from synthetic_data.generative_models.data_synthesiser_utils.datatypes.FloatAttribute import FloatAttribute
+from synthetic_data.generative_models.data_synthesiser_utils.datatypes.IntegerAttribute import IntegerAttribute
+from synthetic_data.generative_models.data_synthesiser_utils.datatypes.SocialSecurityNumberAttribute import SocialSecurityNumberAttribute
+from synthetic_data.generative_models.data_synthesiser_utils.datatypes.StringAttribute import StringAttribute
+from synthetic_data.generative_models.data_synthesiser_utils.datatypes.constants import *
+from .DataType import DataType
 
 def parse_json(attribute_in_json):
     name = attribute_in_json['name']

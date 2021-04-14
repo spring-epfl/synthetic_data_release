@@ -14,7 +14,7 @@ import numpy as np
 from numpy.random import choice
 from pandas import Series
 
-from generative_models.data_synthesiser_utils.utils import normalize_given_distribution
+from synthetic_data.generative_models.data_synthesiser_utils.utils import normalize_given_distribution
 
 
 class AbstractAttribute(object):

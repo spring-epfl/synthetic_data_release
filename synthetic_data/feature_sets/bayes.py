@@ -4,15 +4,10 @@ from pandas import DataFrame, get_dummies
 from numpy import ndarray, all, corrcoef, concatenate, nan_to_num
 from pandas.api.types import CategoricalDtype
 
-from feature_sets.feature_set import FeatureSet
-from feature_sets.independent_histograms import HistogramFeatureSet
+from .feature_set import FeatureSet
+from .independent_histograms import HistogramFeatureSet
 
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
+from synthetic_data.utils.logging import LOGGER
 
 
 class CorrelationsFeatureSet(FeatureSet):
@@ -40,7 +35,7 @@ class CorrelationsFeatureSet(FeatureSet):
             self.num_attr_names.append(col['name'])
             self.nfeatures += 1
 
-        logger.debug(f'Feature set will length {self.nfeatures}')
+        LOGGER.debug(f'Feature set will length {self.nfeatures}')
 
     def extract(self, data):
         assert isinstance(data, self.datatype), f'Feature extraction expects {self.datatype} as input type'

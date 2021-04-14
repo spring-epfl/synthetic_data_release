@@ -7,9 +7,14 @@ import json
 from pandas.api.types import CategoricalDtype
 
 FILLNA_VALUE_CAT = 'NaN'
+
 CATEGORICAL = "categorical"
 CONTINUOUS = "continuous"
 ORDINAL = "ordinal"
+
+COLUMN_CATEGORICAL = 'categorical_columns'
+COLUMN_CONTINUOUS = 'continuous_columns'
+COLUMN_ORDINAL = 'ordinal_columns'
 
 
 def load_local_data_as_df(filename):
@@ -17,7 +22,7 @@ def load_local_data_as_df(filename):
         metadata = json.load(f)
     dtypes = {cd['name']:_get_dtype(cd) for cd in metadata['columns']}
     df = pd.read_csv(f'{filename}.csv', dtype=dtypes)
-    metadata['categorical_columns'], metadata['ordinal_columns'], metadata['continuous_columns'] = _get_columns(metadata)
+    metadata[COLUMN_CATEGORICAL], metadata[COLUMN_ORDINAL], metadata[COLUMN_CONTINUOUS] = _get_columns(metadata)
 
     return df, metadata
 
@@ -26,7 +31,7 @@ def load_local_data_as_array(filename):
     df = pd.read_csv(f'{filename}.csv')
     with open(f'{filename}.json') as f:
         metadata = json.load(f)
-    metadata['categorical_columns'], metadata['ordinal_columns'], metadata['continuous_columns'] = _get_columns(metadata)
+    metadata[COLUMN_CATEGORICAL], metadata[COLUMN_ORDINAL], metadata[COLUMN_CONTINUOUS] = _get_columns(metadata)
 
     data = convert_df_to_array(df, metadata)
 

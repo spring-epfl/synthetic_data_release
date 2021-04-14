@@ -12,15 +12,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import ShuffleSplit
 
-from utils.datagen import convert_df_to_array
-from privacy_attacks.privacy_attack import PrivacyAttack
-
-import logging
-from logging.config import fileConfig
-dirname = path.dirname(__file__)
-logconfig = path.join(dirname, '../logging_config.ini')
-fileConfig(logconfig)
-logger = logging.getLogger(__name__)
+from synthetic_data.utils.datagen import convert_df_to_array
+from synthetic_data.utils.logging import LOGGER
+from .privacy_attack import PrivacyAttack
 
 LABEL_OUT = 0
 LABEL_IN = 1
@@ -32,7 +26,7 @@ class MIAttackClassifier(PrivacyAttack):
 
     def __init__(self, AttackClassifier, metadata, priorProbabilities, FeatureSet=None):
         """
-        
+
         :param AttackClassifier: Classifier: An object that implements a binary classifier
         :param metadata: dict: Attribute metadata describing the data domain of the synthetic target data
         :param priorProbabilities: dict: Prior probabilities over the target's membership
@@ -81,7 +75,7 @@ class MIAttackClassifier(PrivacyAttack):
 
         self.AttackClassifier.fit(synA, labels)
 
-        logger.debug('Finished training MIA distinguisher')
+        LOGGER.debug('Finished training MIA distinguisher')
         self.trained = True
 
         del synA, labels
@@ -201,7 +195,7 @@ def generate_mia_shadow_data_shufflesplit(GenModel, target, rawA, sizeRaw, sizeS
     kf = ShuffleSplit(n_splits=numModels, train_size=sizeRaw)
     synA, labels = [], []
 
-    logger.debug(f'Start training {numModels} shadow models of class {GenModel.__class__.__name__}')
+    LOGGER.debug(f'Start training {numModels} shadow models of class {GenModel.__class__.__name__}')
 
     for train_index, _ in kf.split(rawA):
 
@@ -256,7 +250,7 @@ def generate_mia_shadow_data_allin(GenModel, target, rawA, sizeSyn, numCopies):
 
     synA, labels = [], []
 
-    logger.debug(f'Start training shadow model of class {GenModel.__class__.__name__} on data of size {len(rawA)}')
+    LOGGER.debug(f'Start training shadow model of class {GenModel.__class__.__name__} on data of size {len(rawA)}')
 
     # Fit GM to data without target's data
     GenModel.fit(rawA)
