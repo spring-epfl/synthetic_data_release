@@ -9,8 +9,9 @@ Licensed under MIT License
 import numpy as np
 
 from .AbstractAttribute import AbstractAttribute
-from .utils.DataType import DataType
-from synthetic_data.generative_models.data_synthesiser_utils.utils import normalize_given_distribution, generate_random_string
+from .DataTypes import DataType
+
+from synthetic_data.generative_models.data_synthesiser_utils.utils import normalize_given_distribution
 
 
 class StringAttribute(AbstractAttribute):
@@ -18,49 +19,34 @@ class StringAttribute(AbstractAttribute):
 
     """
 
-    def __init__(self, name, data, histogram_size, is_categorical):
-        super().__init__(name, data, histogram_size, is_categorical)
+    def __init__(self, name, data, histogram_size):
+        super().__init__(name, data, histogram_size)
         self.is_numerical = False
+        self.is_categorical = True
         self.data_type = DataType.STRING
         self.data_dropna_len = self.data_dropna.astype(str).map(len)
 
-    def infer_domain(self, categorical_domain=None, numerical_range=None):
-        if categorical_domain:
-            lengths = [len(i) for i in categorical_domain]
+    def set_domain(self, domain=None):
+        if domain is not None:
+            lengths = [len(i) for i in domain]
             self.min = min(lengths)
             self.max = max(lengths)
-            self.distribution_bins = np.array(categorical_domain)
+            self.distribution_bins = np.array(domain)
         else:
             self.min = int(self.data_dropna_len.min())
             self.max = int(self.data_dropna_len.max())
-            if self.is_categorical:
-                self.distribution_bins = self.data_dropna.unique()
-            else:
-                self.distribution_bins = np.array([self.min, self.max])
+            self.distribution_bins = self.data_dropna.unique()
 
-        self.distribution_probabilities = np.full_like(self.distribution_bins, 1 / self.distribution_bins.size)
+        self.domain_size = len(self.distribution_bins)
 
     def infer_distribution(self):
-        if self.is_categorical:
-            distribution = self.data_dropna.value_counts()
-            for value in set(self.distribution_bins) - set(distribution.index):
-                distribution[value] = 0
-            distribution.sort_index(inplace=True)
-            self.distribution_probabilities = normalize_given_distribution(distribution)
-            self.distribution_bins = np.array(distribution.index)
-        else:
-            distribution = np.histogram(self.data_dropna_len, bins=self.histogram_size)
-            self.distribution_bins = distribution[1][:-1]
-            self.distribution_probabilities = normalize_given_distribution(distribution[0])
 
-    def generate_values_as_candidate_key(self, n):
-        length = np.random.randint(self.min, self.max)
-        vectorized = np.vectorize(lambda x: '{}{}'.format(generate_random_string(length), x))
-        return vectorized(np.arange(n))
+        frequency_counts = self.data_dropna.value_counts()
+        for value in set(self.distribution_bins) - set(frequency_counts.index):
+            frequency_counts[value] = 0
+        frequency_counts = frequency_counts[self.distribution_bins]
+
+        self.distribution_probabilities = normalize_given_distribution(frequency_counts)
 
     def sample_values_from_binning_indices(self, binning_indices):
-        column = super().sample_values_from_binning_indices(binning_indices)
-        if not self.is_categorical:
-            column[~column.isnull()] = column[~column.isnull()].apply(lambda x: generate_random_string(int(x)))
-
-        return column
+        return super().sample_values_from_binning_indices(binning_indices)
