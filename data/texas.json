@@ -181,9 +181,9 @@
     },
     {
       "name": "LENGTH_OF_STAY",
-      "type": "Float",
-      "min": 1.0,
-      "max": 9999.0
+      "type": "Integer",
+      "min": 1,
+      "max": 9999
     },
     {
       "name": "TOTAL_CHARGES",

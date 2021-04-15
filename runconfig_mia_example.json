@@ -12,7 +12,6 @@
   "generativeModels": {
     "IndependentHistogram": [[10]],
     "BayesianNet": [[10, 1]],
-    "PrivBayes": [[10, 1, 0.1]],
-    "CTGAN": [[128, [256, 256], [256, 256], 1e-06, 100, 100]]
+    "PrivBayes": [[10, 1, 0.1]]
   }
 }

@@ -12,7 +12,10 @@ cmap_light = sns.light_palette(hex_to_husl(colours[1]), input="husl", as_cmap=Tr
 cmap_diverging = sns.diverging_palette(h_neg=227, h_pos=4, s=73, l=60, n=12, as_cmap=True)
 cmap_diverging.set_bad('white')
 
-pltmarkers = ['o', 'X', 'D', 'P', 'X']
+pltmarkers = ['o', 'X', 'D', 'P']
+
+fontsizelabels = 26
+fontsizeticks = 24
 
 def set_style():
     sns.set_palette(cpalette)
