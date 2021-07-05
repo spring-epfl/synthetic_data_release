@@ -1,11 +1,3 @@
-Age,Sex,Job,Housing,Saving accounts,Checking account,Credit amount,Duration,Purpose,Risk
-33,female,unskilled,own,moderate,little,3271,18,car,bad
-33,male,skilled,rent,moderate,moderate,3271,20,radio/TV,good
-35,female,skilled,own,little,moderate,3271,18,radio/TV,bad
-33,female,unskilled,rent,moderate,little,2319,18,car,good
-35,male,skilled,rent,little,moderate,3271,18,radio/TV,bad
-35,male,unskilled,own,moderate,little,2319,20,car,bad
-35,male,skilled,own,little,moderate,2319,18,car,bad
-35,male,unskilled,own,little,little,3271,20,radio/TV,bad
-35,female,unskilled,own,moderate,moderate,3271,20,car,bad
-35,female,skilled,own,little,moderate,3271,20,radio/TV,bad
+version https://git-lfs.github.com/spec/v1
+oid sha256:dac84a41b87e3f7b7ae067262b6ba9b23419339d5513aa75ca7b77b2eefb84c5
+size 18560

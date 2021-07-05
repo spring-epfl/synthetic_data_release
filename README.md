@@ -2,25 +2,23 @@
 Implementation of a privacy evaluation framework for synthetic data publishing
 
 # Attack models
-The module `attack_models` so far includes:
+The module `attack_models` so far includes
 
-- `MIAttackClassifier` is a privacy adversary that implements a generative model MIA, and can be used to evaluate the risk of linkability.
-Given a single synthetic dataset output by a generative model, this adversary produces a binary label that predicts whether a target record belongs to the model’s training set or not
+A privacy adversary to test for privacy gain with respect to linkage attacks modelled as a membership inference attack `MIAAttackClassifier`.
 
-
-- `AttributeInferenceAttack` is a privacy adversary that learns to predict the value of an unknown sensitive attribute from a set of known attributes, and uses this knowledge to guess a target record’s sensitive value.
+A simple attribute inference attack `AttributeInferenceAttack` that aims to infer a target's sensitive value given partial knowledge about the target record
 
 # Generative models
 The module `generative_models` so far includes:   
 - `IndependentHistogramModel`: An independent histogram model adapted from [Data Responsibly's DataSynthesiser](https://github.com/DataResponsibly/DataSynthesizer)
 - `BayesianNetModel`: A generative model based on a Bayesian Network adapted from [Data Responsibly's DataSynthesiser](https://github.com/DataResponsibly/DataSynthesizer)
-- `GaussianMixtureModel`: A simple Gaussian Mixture model taken from the [sklearn library](https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html) 
+- `GaussianMixtureModel`: A simple Gaussian Mixture model taken from the [sklearn library](https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html)
 - `CTGAN`: A conditional tabular generative adversarial network that integrates the CTGAN model from [CTGAN](https://github.com/sdv-dev/CTGAN)  
-- `PateGan`: ﻿A model that builds on the Private Aggregation of Teacher Ensembles (PATE) to achieve differential privacy for GANs adapted from [PateGan](https://bitbucket.org/mvdschaar/mlforhealthlabpub/src/82d7f91d46db54d256ff4fc920d513499ddd2ab8/alg/pategan/)
+- `PATE-GAN`: A differentially private generative adversarial network adapted from its original [implementation](https://bitbucket.org/mvdschaar/mlforhealthlabpub/src/82d7f91d46db54d256ff4fc920d513499ddd2ab8/alg/pategan/)
 
 # Setup
 ## Requirements
-The framework and its building blocks have been developed and tested on Python 3.6 and 3.7
+The framework and its building blocks have been developed and tested under Python 3.6 and 3.7
 
 We recommend to create a virtual environment for installing all dependencies and running the code
 ```
@@ -30,14 +28,8 @@ pip install -r requirements.txt
 ```
 
 ## Dependencies
-
-### PyTorch
-
-The PyTorch package to install depends on the version of CUDA (if any) installed on your system. Please refer to their [website](https://pytorch.org/) to install the correct PyTorch package on your virtual environment.
-
-### CTGAN
-
-The `CTGAN` model depends on a fork of the original model training algorithm that can be found [here](https://github.com/spring-epfl/CTGAN)
+The `CTGAN` model depends on a fork of the original model training algorithm that can be found here
+[CTGAN-SPRING](https://github.com/spring-epfl/CTGAN.git)
 
 To install the correct version clone the repository above and run
 ```
@@ -51,22 +43,20 @@ import ctgan
 ```
 from within your virtualenv `python`
 
+# Example runs
+To run a privacy evaluation with respect to the privacy concern of linkability you can run
 
-## Unittests
-To run the test suite included in `tests` run
-
-```$xslt
-python -m unittest discover
+```
+python linkage_cli.py -D data/texas -RC tests/linkage/runconfig.json -O tests/linkage
 ```
 
-# Example
-To run an example evaluation of the expected privacy gain with respect to the risk of linkability for all five generative models you can run
-```$xslt
-python mia_cli.py -D data/germancredit -RC runconfig_mia_example.json -O .
+The results file produced after successfully running the script can be parsed with the function `load_results_mia` provided in `utils/analyse_results.py`. 
+
+To run a privacy evaluation with respect to the privacy concern of inference you can run
+
+```
+python inference_cli.py -D data/texas -RC tests/inference/runconfig.json -O tests/inference
 ```
 
-To run an example evaluation of the expected privacy gain with respect to the risk of attribute inference for all five generative models you can run
-```$xslt
-python mleai_cli.py -D data/germancredit -RC runconfig_attr_example.json -O .
-```
+The results file produced after successfully running the script can be parsed with the function `load_results_ai` provided in `utils/analyse_results.py`.
 

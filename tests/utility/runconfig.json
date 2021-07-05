@@ -1,0 +1,23 @@
+{
+  "nIter": 2,
+  "sizeRawT": 1000,
+  "sizeSynT": 1000,
+  "nSynT": 5,
+  "nTargets": 1,
+  "Targets": ["ID14086"],
+  "TestRecords": ["ID59196", "ID61105"],
+  "generativeModels": {
+    "IndependentHistogram": [[10]]
+  },
+  "sanitisationTechniques": {
+    "SanitiserNHS": [[10, 1, 0.99, 10, [], ["PAT_STATE", "SEX_CODE", "RACE", "ETHNICITY", "PAT_AGE"]]]
+  },
+  "dataFilter": {
+    "train": ["DISCHARGE", "2013"],
+    "test": ["DISCHARGE", "2014"]
+  },
+  "utilityTasks": {
+    "RandForestClass": [["RISK_MORTALITY"]]
+  }
+}
+

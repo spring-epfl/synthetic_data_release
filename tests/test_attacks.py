@@ -1,5 +1,6 @@
 """A template file for writing a simple test for a new attack model"""
-from unittest import TestCase, skip
+from unittest import TestCase
+from pandas import DataFrame
 
 from warnings import filterwarnings
 filterwarnings('ignore')
@@ -7,190 +8,81 @@ filterwarnings('ignore')
 from os import path
 cwd = path.dirname(__file__)
 
-from numpy import all
-from sklearn.model_selection import train_test_split
+from attack_models.mia_classifier import (MIAttackClassifierLinearSVC,
+                                          MIAttackClassifierLogReg,
+                                          MIAttackClassifierRandomForest,
+                                          generate_mia_shadow_data,
+                                          generate_mia_anon_data)
 
-from synthetic_data.privacy_attacks.membership_inference import *
-from synthetic_data.privacy_attacks.attribute_inference import *
-
-from synthetic_data.generative_models.data_synthesiser import IndependentHistogram
-from synthetic_data.feature_sets.model_agnostic import NaiveFeatureSet
-from synthetic_data.utils.datagen import load_local_data_as_df
-
-NUM_SHADOWS = 2
-NUM_SYN_COPIES = 10
-PRIOR = {LABEL_IN: 0.5, LABEL_OUT: 0.5}
-SENSITIVE = 'Duration'
+from generative_models.data_synthesiser import IndependentHistogram
+from sanitisation_techniques.sanitiser import SanitiserNHS
+from feature_sets.independent_histograms import HistogramFeatureSet
+from utils.datagen import load_local_data_as_df
 
 class TestAttacks(TestCase):
-
     @classmethod
-    def setUp(self):
-        raw, self.metadata = load_local_data_as_df(path.join(cwd, 'germancredit_test'))
-        self.rawA, self.rawTest = train_test_split(raw, test_size=.25)
-        self.sizeS = self.sizeR = len(self.rawTest)
-        self.target = self.rawTest.iloc[1, :].to_frame().T
+    def setUp(self) -> None:
+        self.raw, self.metadata = load_local_data_as_df(path.join(cwd, 'germancredit_test'))
+        self.sizeS = int(len(self.raw)/2)
+        self.GenModel = IndependentHistogram(self.metadata)
+        self.San = SanitiserNHS(self.metadata)
+        self.FeatureSet = HistogramFeatureSet(DataFrame, metadata=self.metadata)
 
-        self.GM = IndependentHistogram()
+        self.target = self.raw.sample()
+        self.shadowDataSyn = generate_mia_shadow_data(self.GenModel, self.target, self.raw, self.sizeS, self.sizeS, numModels=2, numCopies=2)
+        self.shadowDataSan = generate_mia_anon_data(self.San, self.target, self.raw, self.sizeS, numSamples=2)
 
-        self.synA, self.labelsSynA = generate_mia_shadow_data_shufflesplit(self.GM, self.target, self.rawA,
-                                                                           self.sizeR, self.sizeS,
-                                                                           NUM_SHADOWS, NUM_SYN_COPIES)
-
-        self.FeatureSet =  NaiveFeatureSet(DataFrame)
-
-    def test_mia_svc(self):
-        print('\n--Test MIA with non-linear SVC--')
-
-        # Test without feature extraction
-        Attack = MIAttackClassifierSVC(self.metadata, PRIOR)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy without feature extraction: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
-
-        # Test with feature extraction
-        Attack = MIAttackClassifierSVC(self.metadata, PRIOR, self.FeatureSet)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy with naive feature set: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
-
-    @skip('Does not converge with small test dataset')
-    def test_mia_linear_svc(self):
-        print('\n--Test MIA with linear SVC--')
-        # Test without feature extraction
-        Attack = MIAttackClassifierLinearSVC(self.metadata, PRIOR)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy without feature extraction: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
-
-        # Test with feature extraction
-        Attack = MIAttackClassifierLinearSVC(self.metadata, PRIOR, self.FeatureSet)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy with naive features: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
+        self.GenModel.fit(self.raw)
+        self.synthetic = [self.GenModel.generate_samples(self.sizeS) for _ in range(10)]
+        self.sanitised = [self.San.sanitise(self.raw) for _ in range(10)]
 
     def test_mia_randforest(self):
-        print('\n--Test MIA with RandForest--')
-        # Test without feature extraction
-        Attack = MIAttackClassifierRandomForest(self.metadata, PRIOR)
-        Attack.train(self.synA, self.labelsSynA)
+        print('\nTest MIA RandForest')
+        ## Default without feature extraction
+        Attack = MIAttackClassifierRandomForest(metadata=self.metadata)
+        Attack.train(*self.shadowDataSyn)
 
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
+        guesses = Attack.attack(self.synthetic)
+        self.assertEqual(len(guesses), len(self.synthetic))
 
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
+        ## With FeatureSet
+        Attack = MIAttackClassifierRandomForest(metadata=self.metadata, FeatureSet=self.FeatureSet)
+        Attack.train(*self.shadowDataSyn)
 
-        print(f'MIA accuracy without feature extraction: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
+        guesses = Attack.attack(self.synthetic)
+        self.assertEqual(len(guesses), len(self.synthetic))
 
-        # Test with feature extraction
-        Attack = MIAttackClassifierRandomForest(self.metadata, PRIOR, self.FeatureSet)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy with naive feature set: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
-
-    def test_logreg(self):
-        print('\n--Test MIA with LogReg--')
-        # Test without feature extraction
-        Attack = MIAttackClassifierLogReg(self.metadata, PRIOR)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy without feature extraction: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
-
-        # Test with feature extraction
-        Attack = MIAttackClassifierLogReg(self.metadata, PRIOR, self.FeatureSet)
-        Attack.train(self.synA, self.labelsSynA)
-
-        self.GM.fit(self.rawTest)
-        synTest = [self.GM.generate_samples(self.sizeS) for _ in range(NUM_SYN_COPIES)]
-        guesses = Attack.attack(synTest)
-        probSuccess = Attack.get_probability_of_success(synTest, [LABEL_IN for _ in range(NUM_SYN_COPIES)])
-
-        self.assertEqual(len(guesses), len(synTest))
-        self.assertTrue(all([p in [0, 1] for p in guesses]))
-        self.assertTrue(all([0 <= p <= 1. for p in probSuccess]))
-
-        print(f'MIA accuracy with naive feature sets: {sum([g == LABEL_IN for g in guesses])/NUM_SYN_COPIES}')
-
-    def test_attr_linreg(self):
-        print('\n--Test AttributeInference with LinReg--')
-
-        targetKnown = self.target.drop(SENSITIVE, axis=1)
-        secret = self.target[SENSITIVE].values
-        Attack = AttributeInferenceAttackLinearRegression(SENSITIVE, self.metadata, self.rawA)
-
-        Attack.train(self.rawTest)
-        guess = Attack.attack(targetKnown)
-
-        print(f'True value: {secret}, Guess R: {guess}')
-
-        self.GM.fit(self.rawTest)
-        synTest = self.GM.generate_samples(self.sizeS)
-
-        Attack.train(synTest)
-        guess = Attack.attack(targetKnown)
-
-        print(f'True value: {secret}, Guess S: {guess}')
+        ## Test linkage
+        Attack.train(*self.shadowDataSan)
+        guesses = Attack.attack(self.sanitised, attemptLinkage=True, target=self.target)
+        self.assertEqual(len(guesses), len(self.sanitised))
 
 
+    def test_mia_logreg(self):
+        print('\nTest MIA LogReg')
+        Attack = MIAttackClassifierLogReg(metadata=self.metadata, FeatureSet=self.FeatureSet)
+        Attack.train(*self.shadowDataSyn)
 
+        guesses = Attack.attack(self.synthetic)
+        self.assertEqual(len(guesses), len(self.synthetic))
+
+        ## Test linkage
+        Attack.train(*self.shadowDataSan)
+        guesses = Attack.attack(self.sanitised, attemptLinkage=True, target=self.target)
+        self.assertEqual(len(guesses), len(self.sanitised))
+
+    def test_mia_svc(self):
+        print('\nTest MIA SVC')
+        Attack = MIAttackClassifierLinearSVC(metadata=self.metadata, FeatureSet=self.FeatureSet)
+        Attack.train(*self.shadowDataSyn)
+
+        guesses = Attack.attack(self.synthetic)
+        self.assertEqual(len(guesses), len(self.synthetic))
+
+        ## Test linkage
+        Attack.train(*self.shadowDataSan)
+        guesses = Attack.attack(self.sanitised, attemptLinkage=True, target=self.target)
+        self.assertEqual(len(guesses), len(self.sanitised))
 
 
 

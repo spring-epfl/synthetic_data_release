@@ -1,0 +1,16 @@
+{
+  "sensitiveAttributes": {"LENGTH_OF_STAY": "LinReg",
+    "RACE": "Classification"},
+  "nIter": 2,
+  "sizeRawT": 1000,
+  "sizeSynT": 1000,
+  "nSynT": 1,
+  "Targets": ["ID31432"],
+  "nTargets": 1,
+  "generativeModels": {
+    "IndependentHistogram": [[10]]
+  },
+  "sanitisationTechniques": {
+    "SanitiserNHS": [[10, 1, 0.99, 10, [], ["PAT_STATE", "SEX_CODE", "RACE", "ETHNICITY", "PAT_AGE"]]]
+  }
+}
