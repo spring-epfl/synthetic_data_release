@@ -2,13 +2,14 @@
   "columns": [
     {
       "name": "Age",
-      "min": 33.0,
-      "max": 35.0,
-      "type": "continuous"
+      "min": 19,
+      "max": 75,
+      "type": "Integer",
+      "bins": [18, 25, 30, 40, 50, 60, 80]
     },
     {
       "name": "Sex",
-      "type": "categorical",
+      "type": "Categorical",
       "size": 2,
       "i2s": [
         "male",
@@ -17,64 +18,78 @@
     },
     {
       "name": "Job",
-      "type": "ordinal",
-      "size": 2,
+      "type": "Ordinal",
+      "size": 4,
       "i2s": [
+        "unemployed",
         "unskilled",
-        "skilled"
+        "skilled",
+        "management"
       ]
     },
     {
       "name": "Housing",
-      "type": "categorical",
-      "size": 2,
+      "type": "Categorical",
+      "size": 3,
       "i2s": [
         "own",
+        "free",
         "rent"
       ]
     },
     {
       "name": "Saving accounts",
-      "type": "ordinal",
+      "type": "Ordinal",
       "i2s": [
+        "no_info",
         "little",
-        "moderate"
+        "moderate",
+        "quite rich",
+        "rich"
       ],
-      "size": 2
+      "size": 5
     },
     {
       "name": "Checking account",
-      "type": "ordinal",
-      "size": 2,
+      "type": "Ordinal",
+      "size": 4,
       "i2s": [
+        "no_info",
         "little",
-        "moderate"
+        "moderate",
+        "rich"
       ]
     },
     {
       "name": "Credit amount",
-      "type": "continuous",
-      "min": 2319.0,
-      "max": 3271.0
+      "type": "Float",
+      "min": 250.0,
+      "max": 18424.0
     },
     {
       "name": "Duration",
-      "type": "continuous",
-      "min": 18.0,
-      "max": 20.0
+      "type": "Integer",
+      "min": 4,
+      "max": 72
     },
     {
       "name": "Purpose",
-      "type": "categorical",
-      "size": 2,
+      "type": "Categorical",
+      "size": 8,
       "i2s": [
         "radio/TV",
-        "car"
+        "education",
+        "furniture/equipment",
+        "car",
+        "business",
+        "domestic appliances",
+        "repairs",
+        "vacation/others"
       ]
     },
     {
       "name": "Risk",
-      "type": "categorical",
+      "type": "Categorical",
       "size": 2,
       "i2s": [
         "good",
