@@ -1,6 +1,8 @@
 # Privacy evaluation framework for synthetic data publishing
 Implementation of a privacy evaluation framework for synthetic data publishing
 
+Based on "Synthetic Data - Anonymisation Groundhog Day, Theresa Stadler, Bristena Oprisanu, and Carmela Troncoso, [arXiv](https://arxiv.org/abs/2011.07018), 2020"
+
 # Attack models
 The module `attack_models` so far includes
 
