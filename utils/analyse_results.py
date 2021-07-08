@@ -47,6 +47,7 @@ GMNAMES = {'Raw': '$\mathtt{Raw}$',
            'PateGanEps1.0': '$\mathtt{PATEGAN~\\varepsilon: 1}$',
            'PateGanEps0.1': '$\mathtt{PATEGAN~\\varepsilon: 0.1}$',
            'PateGanEps0.05': '$\mathtt{PATEGAN~\\varepsilon: 0.05}$',
+           #
            'SanitiserNHSk2': '$\mathtt{San~k:2}$',
            'SanitiserNHSk5': '$\mathtt{San~k:5}$',
            'SanitiserNHSk10': '$\mathtt{San~k:10}$'
@@ -73,7 +74,12 @@ HUEMARKERS = [next(MARKERCYCLE) for _ in range(20)]
 
 
 ###### Load results
-def load_results_mia(dirname):
+def load_results_linkage(dirname):
+    """
+    Helper function to load results of privacy evaluation under risk of linkability
+    :param dirname: str: Directory that contains results files
+    :return: results: DataFrame: Results of privacy evaluation
+    """
 
     files = glob(path.join(dirname, f'ResultsMIA_*.json'))
 
@@ -119,7 +125,13 @@ def load_results_mia(dirname):
     return resAgg
 
 
-def load_results_ai(dirname, dpath):
+def load_results_inference(dirname, dpath):
+    """
+    Helper function to load results of privacy evaluation under risk of inference
+    :param dirname: str: Directory that contains results files
+    :param dpath: str: Dataset path (needed to extract some metadata)
+    :return: results: DataFrame: Results of privacy evaluation
+    """
     df, metadata = load_local_data_as_df(dpath)
 
     files = glob(path.join(dirname, f'ResultsMLEAI_*.json'))
@@ -202,67 +214,7 @@ def load_results_ai(dirname, dpath):
     return resAdv
 
 
-def load_results_util(fname):
-    with open(fname) as f:
-        results = json.load(f)
-
-    resList = []
-    for ut, ures in results.items():
-        model = [m for m in PREDTASKS if m in ut][0]
-        labelVar = ut.split(model)[-1]
-
-        if '_' in labelVar:
-            labelVar = ''.join([s.capitalize() for s in labelVar.split('_')])
-
-        if '-' in labelVar:
-            labelVar = ''.join([s.capitalize() for s in labelVar.split('-')])
-
-        for gm, gmres in ures.items():
-            for n, nres in gmres.items():
-                for tid, tres in nres.items():
-                    res = DataFrame(tres)
-
-                    res['TargetID'] = tid
-                    res['Run'] = f'Run {n}'
-                    res['TargetModel'] = gm
-                    res['PredictionModel'] = model
-                    res['LabelVar'] = labelVar
-
-                    resList.append(res)
-
-    results = concat(resList)
-
-    return results
-
-
-def load_results_util_agg(fname):
-    with open(fname) as f:
-        res = json.load(f)
-
-    resList = []
-    for ut, utres in res.items():
-        model = [m for m in PREDTASKS if m in ut][0]
-        labelVar = ut.split(model)[-1]
-
-        if '_' in labelVar:
-            labelVar = ''.join([s.capitalize() for s in labelVar.split('_')])
-
-        if '-' in labelVar:
-            labelVar = ''.join([s.capitalize() for s in labelVar.split('-')])
-
-        for gm, gmres in utres.items():
-            resDF = DataFrame(gmres)
-            resDF['PredictionModel'] = model
-            resDF['LabelVar'] = labelVar
-            resDF['TargetModel'] = gm
-
-            resList.append(resDF)
-
-    resU = concat(resList)
-
-    return resU
-
-
+### Plotting
 def plt_summary(results, dname, models, hue='FeatureSet'):
     """ Plot average privacy gain across all targets and iterations. """
     fig, ax = plt.subplots()
