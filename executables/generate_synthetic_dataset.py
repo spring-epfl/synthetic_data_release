@@ -48,6 +48,7 @@ def main():
                            help='The file where to store the synthetic dataset'
                            )
     argparser.add_argument('--sample-size', '-N', type=int,
+                           default=DEFAULT_SAMPLE_SIZE,
                            help='The size of the synthetic dataset')
     args = argparser.parse_args()
 
@@ -103,11 +104,6 @@ def main():
     else:
         raise ValueError(f'Unknown mechanism {args.mechanism}')
 
-    # Set the sample size
-    sample_size = DEFAULT_SAMPLE_SIZE
-    if args.sample_size:
-        sample_size = args.sample_size
-
     # Set the output path
     output_path = Path(f'{mechanism.__name__}.csv')
     if args.output_file:
@@ -116,7 +112,7 @@ def main():
     # Generate the synthetic data
     logger.info('Generating the synthetic data, this can take time...')
     mechanism.fit(raw_pop)
-    mechanism.generate_samples(sample_size).to_csv(output_path)
+    mechanism.generate_samples(args.sample_size).to_csv(output_path)
 
 
 if __name__ == "__main__":
