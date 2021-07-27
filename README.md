@@ -39,7 +39,14 @@ cd CTGAN
 make install
 ```
 
-To test your installation try to run 
+Add the path to this directory to your python path. You can also add this line
+in your shell configuration file (e.g., `~/.bashrc`) to load it automatically.
+```bash
+# Execute this in the CTGAN folder, otherwise replace `pwd` with the actual path
+export PYTHONPATH=$PYTHONPATH:`pwd`
+```
+
+To test your installation try to run
 ```
 import ctgan
 ```
