@@ -55,9 +55,11 @@ def main():
     if args.s3name:
         raw_pop, metadata = load_s3_data_as_df(args.s3name)
         dname = args.s3name
-    else:
+    elif args.datapath:
         raw_pop, metadata = load_local_data_as_df(Path(args.datapath))
         dname = args.datapath.split('/')[-1]
+    else:
+        raise ValueError('Please provide a dataset')
     logger.info(f'Loaded data {dname}:\n{raw_pop}')
     logger.info(f'Loaded the corresponding metadata: {metadata}')
 
