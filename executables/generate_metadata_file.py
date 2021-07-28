@@ -2,6 +2,23 @@
 """
 Generate the json metadata file given a dataset in csv format.
 
+Please set the two global variables IMPLICIT_ORDINAL_ATTRIBUTES and
+EXPLICIT_ORDINAL_ATTRIBUTES to correspond to the dataset that you use.
+
+Great care should be taken when using this script to infer the type and the
+domain of the attributes as it relies on the dataset that is given in
+parameter.
+
+
+usage: generate_metadata_file.py [-h] --dataset DATASET [--output OUTPUT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --dataset DATASET, -i DATASET
+                        Path to the dataset in csv format
+  --output OUTPUT, -o OUTPUT
+                        Path where to write the json metadata file
+
 -----
 Nampoina Andriamilanto <tompo.andri@gmail.com>
 """
