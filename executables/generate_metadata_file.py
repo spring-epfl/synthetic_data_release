@@ -129,12 +129,12 @@ def infer_type(column: str, numpy_type: str, ordinal_attributes: Set[str]
         numpy_type: The numpy type of the column.
         ordinal_attributes: The set of the ordinal attributes.
     """
+    if column in ordinal_attributes:
+        return ORDINAL
     if np.issubdtype(numpy_type, np.integer):
         return INTEGER
     if np.issubdtype(numpy_type, np.floating):
         return FLOAT
-    if column in ordinal_attributes:
-        return ORDINAL
     return CATEGORICAL
 
 
