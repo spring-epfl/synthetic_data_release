@@ -33,10 +33,11 @@ import pandas as pd
 from loguru import logger
 
 from utils.constants import (CATEGORICAL, FLOAT, INTEGER, NUMERICAL, ORDINAL)
+from utils.utils import json_numpy_serialzer
 
 # Please define the set of the ordinal attributes which values can be
 # automatically sorted (using the sorted() python function)
-IMPLICIT_ORDINAL_ATTRIBUTES = {'age', 'fnlwgt'}
+IMPLICIT_ORDINAL_ATTRIBUTES = {'age'}
 
 # Please define the set of the ordinal attributes which values are ordered
 # manually
@@ -68,6 +69,7 @@ def main():
     dataset_path = Path(args.dataset)
     dataset = pd.read_csv(dataset_path, header=0)
     logger.debug(f'Sample of the loaded dataset:\n{dataset}')
+    dataset.info()
 
     # Generate the metadata of each attribute
     logger.info('Generating the metadata of the attributes')
@@ -80,6 +82,7 @@ def main():
         # Infer its type among (Integer, Float, Ordinal, Categorical)
         inferred_type = infer_type(column, numpy_type, ORDINAL_ATTRIBUTES)
         column_infos = {'name': column, 'type': inferred_type}
+        logger.debug(column_infos)
 
         # If the type is numerical, set the min and max value
         if inferred_type in NUMERICAL:
@@ -114,7 +117,7 @@ def main():
 
     with open(output_path, 'w+') as json_output_file:
         json.dump({'columns': attributes}, json_output_file,
-                  indent=JSON_SPACE_INDENT)
+                  indent=JSON_SPACE_INDENT, default=json_numpy_serialzer)
 
 
 def infer_type(column: str, numpy_type: str, ordinal_attributes: Set[str]
@@ -126,9 +129,9 @@ def infer_type(column: str, numpy_type: str, ordinal_attributes: Set[str]
         numpy_type: The numpy type of the column.
         ordinal_attributes: The set of the ordinal attributes.
     """
-    if isinstance(numpy_type, np.integer):
+    if np.issubdtype(numpy_type, np.integer):
         return INTEGER
-    if isinstance(numpy_type, np.floating):
+    if np.issubdtype(numpy_type, np.floating):
         return FLOAT
     if column in ordinal_attributes:
         return ORDINAL
