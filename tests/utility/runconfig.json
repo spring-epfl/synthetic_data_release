@@ -4,17 +4,17 @@
   "sizeSynT": 1000,
   "nSynT": 5,
   "nTargets": 1,
-  "Targets": ["ID14086"],
-  "TestRecords": ["ID59196", "ID61105"],
+  "Targets": ["ID26241"],
+  "TestRecords": ["ID31432"],
   "generativeModels": {
-    "IndependentHistogram": [[10]]
+    "IndependentHistogram": [[25]]
   },
   "sanitisationTechniques": {
     "SanitiserNHS": [[10, 1, 0.99, 10, [], ["PAT_STATE", "SEX_CODE", "RACE", "ETHNICITY", "PAT_AGE"]]]
   },
   "dataFilter": {
-    "train": ["DISCHARGE", "2013"],
-    "test": ["DISCHARGE", "2014"]
+    "train": "DISCHARGE in ['2013Q1', '2013Q2']",
+    "test": "DISCHARGE in ['2013Q3', '2013Q4']"
   },
   "utilityTasks": {
     "RandForestClass": [["RISK_MORTALITY"]]

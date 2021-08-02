@@ -214,6 +214,84 @@ def load_results_inference(dirname, dpath):
     return resAdv
 
 
+def load_results_utility(dirname):
+    """
+    Helper function to load results of utility evaluation
+    :param dirname: str: Directory that contains results files
+    :param dpath: str: Dataset path (needed to extract some metadata)
+    :return: results: DataFrame: Results of utility evaluation
+    """
+
+    # Load individual target utility results
+    files = glob(path.join(dirname, f'ResultsUtilTargets_*.json'))
+
+    resList = []
+    for fpath in files:
+        with open(fpath) as f:
+            results = json.load(f)
+
+        dataset = fpath.split('.json')[0].split('_')[-1]
+
+        for ut, ures in results.items():
+            model = [m for m in PREDTASKS if m in ut][0]
+            labelVar = ut.split(model)[-1]
+
+            if '_' in labelVar:
+                labelVar = ''.join([s.capitalize() for s in labelVar.split('_')])
+
+            if '-' in labelVar:
+                labelVar = ''.join([s.capitalize() for s in labelVar.split('-')])
+
+            for gm, gmres in ures.items():
+                for n, nres in gmres.items():
+                    for tid, tres in nres.items():
+                        res = DataFrame(tres)
+
+                        res['TargetID'] = tid
+                        res['Run'] = f'Run {n}'
+                        res['TargetModel'] = gm
+                        res['PredictionModel'] = model
+                        res['LabelVar'] = labelVar
+                        res['Dataset'] = dataset
+
+                        resList.append(res)
+
+    resultsTargets = concat(resList)
+
+    # Load aggregate utility results
+    files = glob(path.join(dirname, f'ResultsUtilAgg_*.json'))
+
+    resList = []
+    for fpath in files:
+        with open(fpath) as f:
+            results = json.load(f)
+
+        dataset = fpath.split('.json')[0].split('_')[-1]
+
+        for ut, utres in results.items():
+            model = [m for m in PREDTASKS if m in ut][0]
+            labelVar = ut.split(model)[-1]
+
+            if '_' in labelVar:
+                labelVar = ''.join([s.capitalize() for s in labelVar.split('_')])
+
+            if '-' in labelVar:
+                labelVar = ''.join([s.capitalize() for s in labelVar.split('-')])
+
+            for gm, gmres in utres.items():
+                resDF = DataFrame(gmres)
+                resDF['PredictionModel'] = model
+                resDF['LabelVar'] = labelVar
+                resDF['TargetModel'] = gm
+                resDF['Dataset'] = dataset
+
+                resList.append(resDF)
+
+    resultsAgg = concat(resList)
+
+    return resultsTargets, resultsAgg
+
+
 ### Plotting
 def plt_summary(results, dname, models, hue='FeatureSet'):
     """ Plot average privacy gain across all targets and iterations. """
