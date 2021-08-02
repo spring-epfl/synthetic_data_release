@@ -1,4 +1,4 @@
-venv3.7
+venv*
 outputs/*
 .idea/*
 spring_synthetic_data.iml
@@ -16,5 +16,3 @@ paper/*.blg
 paper/*.out
 syn_data_files/
 notebooks_local/
-
-
