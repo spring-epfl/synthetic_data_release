@@ -146,7 +146,8 @@ class ClassificationTask(PredictiveModel):
         self.__name__ = f'{self.Distinguisher.__class__.__name__}{self.labelCol}'
 
     def train(self, data):
-        assert isinstance(data, self.datatype), f"Model expects input as {self.datatype} but got {type(data)}"
+        if not isinstance(data, self.datatype):
+            raise ValueError(f"Model expects input as {self.datatype} but got {type(data)}")
 
         data = self._impute_missing_values(data)
         features = self._encode_data(data.drop(self.labelCol, axis=1))
@@ -158,7 +159,8 @@ class ClassificationTask(PredictiveModel):
         self.trained = True
 
     def predict(self, data):
-        assert isinstance(data, self.datatype), f"Model expects input as {self.datatype} but got {type(data)}"
+        if not isinstance(data, self.datatype):
+            raise ValueError(f"Model expects input as {self.datatype} but got {type(data)}")
 
         features = self._encode_data(data.drop(self.labelCol, axis=1))
         labels = self.Distinguisher.predict(features)
@@ -166,7 +168,8 @@ class ClassificationTask(PredictiveModel):
         return [self.labelsInv[i] for i in labels]
 
     def evaluate(self, data):
-        assert isinstance(data, self.datatype), f"Model expects input as {self.datatype} but got {type(data)}"
+        if not isinstance(data, self.datatype):
+            raise ValueError(f"Model expects input as {self.datatype} but got {type(data)}")
 
         features = self._encode_data(data.drop(self.labelCol, axis=1))
         labelsTrue = data[self.labelCol].apply(lambda x: self.labels[x]).values
@@ -180,7 +183,9 @@ class ClassificationTask(PredictiveModel):
     def _get_labels(self):
         for cdict in self.metadata['columns']:
             if cdict['name'] == self.labelCol:
-                assert cdict['type'] in [CATEGORICAL, ORDINAL]
+                if not cdict['type'] in [CATEGORICAL, ORDINAL]:
+                    raise ValueError('Label column must be discrete data type.')
+
                 return cdict['i2s']
 
 
@@ -211,7 +216,8 @@ class RegressionTask(PredictiveModel):
         self.__name__ = f'{self.Regressor.__class__.__name__}{self.labelCol}'
 
     def train(self, data):
-        assert isinstance(data, self.datatype), f"Model expects input as {self.datatype} but got {type(data)}"
+        if not isinstance(data, self.datatype):
+            raise ValueError(f"Model expects input as {self.datatype} but got {type(data)}")
 
         data = self._impute_missing_values(data)
         features = self._encode_data(data.drop(self.labelCol, axis=1))
@@ -223,7 +229,8 @@ class RegressionTask(PredictiveModel):
         self.trained = True
 
     def predict(self, features):
-        assert isinstance(features, self.datatype), f"Model expects input as {self.datatype} but got {type(features)}"
+        if not isinstance(features, self.datatype):
+            raise ValueError(f"Model expects input as {self.datatype} but got {type(features)}")
 
         features = self._encode_data(features)
         labels = self.Regressor.predict(features)
@@ -231,7 +238,8 @@ class RegressionTask(PredictiveModel):
         return list(labels)
 
     def evaluate(self, data):
-        assert isinstance(data, self.datatype), f"Model expects input as {self.datatype} but got {type(data)}"
+        if not isinstance(data, self.datatype):
+            raise ValueError(f"Model expects input as {self.datatype} but got {type(data)}")
 
         features = self._encode_data(data.drop(self.labelCol, axis=1))
         labelsTrue = data[self.labelCol].values

@@ -12,7 +12,6 @@ from argparse import ArgumentParser
 from utils.datagen import load_s3_data_as_df, load_local_data_as_df
 from utils.utils import json_numpy_serialzer
 from utils.logging import LOGGER
-from utils.constants import *
 
 from sanitisation_techniques.sanitiser import SanitiserNHS
 from generative_models.data_synthesiser import BayesianNet, PrivBayes, IndependentHistogram

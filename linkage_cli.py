@@ -163,7 +163,18 @@ def main():
             attacks[tid][GenModel.__name__] = {}
 
             # Generate shadow model data for training attacks on this target
-            synA, labelsSA = generate_mia_shadow_data(GenModel, target, rawA, runconfig['sizeRawT'], runconfig['sizeSynT'], runconfig['nShadows'], runconfig['nSynA'])
+            if 'PrivBay' in GenModel.__name__:
+                print('Use BayNet as shadow')
+                ShadowModel = BayesianNet(metadata,
+                                          histogram_bins=GenModel.histogram_bins,
+                                          degree=GenModel.degree,
+                                          infer_ranges=GenModel.infer_ranges,
+                                          multiprocess=GenModel.multiprocess,
+                                          seed=GenModel.seed)
+                synA, labelsSA = generate_mia_shadow_data(ShadowModel, target, rawA, runconfig['sizeRawT'], runconfig['sizeSynT'], runconfig['nShadows'], runconfig['nSynA'])
+
+            else:
+                synA, labelsSA = generate_mia_shadow_data(GenModel, target, rawA, runconfig['sizeRawT'], runconfig['sizeSynT'], runconfig['nShadows'], runconfig['nSynA'])
 
             # Train attack on shadow data
             for Feature in [NaiveFeatureSet(GenModel.datatype), HistogramFeatureSet(GenModel.datatype, metadata),
