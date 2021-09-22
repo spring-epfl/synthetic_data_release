@@ -248,10 +248,9 @@ def plt_per_target_pg(results, models, resFilter=('FeatureSet', 'Naive')):
     fig, ax = plt.subplots()
     pointplot(results, 'TargetModel', 'PrivacyGain', 'TargetID', ax, models)
 
-    ax.set_title()
+    ax.set_title(f'Attack on {resFilter[0]}: {resFilter[1]}', fontsize=FSIZELABELS)
     ax.legend(loc='upper center', bbox_to_anchor=(.5, 1.3), ncol=5, title='TargetID')
     ax.set_ylabel('$\mathtt{PG}$', fontsize=FSIZELABELS)
-    ax.set_ylim(-0.05)
 
     return fig
 
@@ -262,9 +261,9 @@ def pointplot(data, x, y, hue, ax, order):
 
     sns.pointplot(data=data, y=y,
                   x=x, hue=hue,
-                  order=order, ci='sd',
+                  order=order,
                   ax=ax, dodge=True,
-                  join=True, markers=huemarkers,
+                  join=False, markers=huemarkers,
                   scale=1.2, errwidth=2,
                   linestyles='--')
 
@@ -276,4 +275,8 @@ def pointplot(data, x, y, hue, ax, order):
 
     # Resize y-tick labels
     for tick in ax.yaxis.get_major_ticks():
+        tick.label.set_fontsize(FSIZETICKS)
+
+    # Resize x-tick labels
+    for tick in ax.xaxis.get_major_ticks():
         tick.label.set_fontsize(FSIZETICKS)
