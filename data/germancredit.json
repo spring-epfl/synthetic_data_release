@@ -1,0 +1,99 @@
+{
+  "columns": [
+    {
+      "name": "Age",
+      "min": 19.0,
+      "max": 75.0,
+      "type": "Float"
+    },
+    {
+      "name": "Sex",
+      "type": "Categorical",
+      "size": 2,
+      "i2s": [
+        "male",
+        "female"
+      ]
+    },
+    {
+      "name": "Job",
+      "type": "Ordinal",
+      "size": 4,
+      "i2s": [
+        "unemployed",
+        "unskilled",
+        "skilled",
+        "management"
+      ]
+    },
+    {
+      "name": "Housing",
+      "type": "Categorical",
+      "size": 3,
+      "i2s": [
+        "own",
+        "free",
+        "rent"
+      ]
+    },
+    {
+      "name": "Saving accounts",
+      "type": "Ordinal",
+      "i2s": [
+        "no_info",
+        "little",
+        "moderate",
+        "quite rich",
+        "rich"
+      ],
+      "size": 5
+    },
+    {
+      "name": "Checking account",
+      "type": "Ordinal",
+      "size": 4,
+      "i2s": [
+        "no_info",
+        "little",
+        "moderate",
+        "rich"
+      ]
+    },
+    {
+      "name": "Credit amount",
+      "type": "Float",
+      "min": 250.0,
+      "max": 18424.0
+    },
+    {
+      "name": "Duration",
+      "type": "Float",
+      "min": 4.0,
+      "max": 72.0
+    },
+    {
+      "name": "Purpose",
+      "type": "Categorical",
+      "size": 8,
+      "i2s": [
+        "radio/TV",
+        "education",
+        "furniture/equipment",
+        "car",
+        "business",
+        "domestic appliances",
+        "repairs",
+        "vacation/others"
+      ]
+    },
+    {
+      "name": "Risk",
+      "type": "Categorical",
+      "size": 2,
+      "i2s": [
+        "good",
+        "bad"
+      ]
+    }
+  ]
+}

@@ -14,13 +14,9 @@ class CTGAN(GenerativeModel):
                  batch_size=500, epochs=300,
                  multiprocess=False):
 
-        self.synthesiser = CTGANSynthesizer(metadata,
-                                            embedding_dim,
-                                            gen_dim,
-                                            dis_dim,
-                                            l2scale,
-                                            batch_size,
-                                            epochs)
+        self.synthesiser = CTGANSynthesizer(embedding_dim, gen_dim, dis_dim,
+                                            l2scale, batch_size, epochs)
+
         self.metadata = metadata
         self.datatype = DataFrame
 
@@ -38,7 +34,7 @@ class CTGAN(GenerativeModel):
         assert isinstance(data, self.datatype), f'{self.__class__.__name__} expects {self.datatype} as input data but got {type(data)}'
 
         LOGGER.debug(f'Start fitting {self.__class__.__name__} to data of shape {data.shape}...')
-        self.synthesiser.fit(data)
+        self.synthesiser.fit(data, self.metadata)
 
         LOGGER.debug(f'Finished fitting')
         self.trained = True
