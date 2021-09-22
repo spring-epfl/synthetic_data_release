@@ -3,13 +3,17 @@
     {
       "name": "DISCHARGE",
       "type": "Categorical",
-      "size": 5,
+      "size": 9,
       "i2s": [
+        "2013Q4",
         "2013Q1",
-        "2012Q4",
-        "2013Q2",
         "2013Q3",
-        "2013Q4"
+        "2013Q2",
+        "2012Q4",
+        "2014Q4",
+        "2014Q1",
+        "2014Q2",
+        "2014Q3"
       ]
     },
     {
@@ -17,12 +21,12 @@
       "type": "Categorical",
       "size": 7,
       "i2s": [
-        "2",
-        "1",
         "3",
-        "5",
-        "9",
         "4",
+        "1",
+        "2",
+        "9",
+        "5",
         "INVALID"
       ]
     },
@@ -32,12 +36,12 @@
       "size": 9,
       "i2s": [
         "TX",
-        "ZZ",
         "NM",
-        "LA",
         "AR",
+        "ZZ",
         "OK",
         "FC",
+        "LA",
         "XX",
         "INVALID"
       ]
@@ -45,34 +49,31 @@
     {
       "name": "PAT_STATUS",
       "type": "Categorical",
-      "size": 26,
+      "size": 23,
       "i2s": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
         "6",
-        "7",
-        "8",
-        "9",
-        "20",
-        "30",
-        "40",
-        "41",
-        "42",
-        "43",
-        "50",
+        "1",
+        "3",
+        "2",
         "51",
-        "61",
         "62",
-        "63",
-        "64",
+        "50",
+        "20",
         "65",
+        "5",
+        "63",
+        "7",
+        "9",
+        "4",
+        "INVALID",
         "66",
-        "71",
-        "72",
-        "INVALID"
+        "61",
+        "64",
+        "30",
+        "43",
+        "8",
+        "41",
+        "40"
       ]
     },
     {
@@ -92,11 +93,11 @@
       "size": 6,
       "i2s": [
         "4",
-        "3",
         "5",
+        "3",
         "2",
-        "1",
-        "INVALID"
+        "INVALID",
+        "1"
       ]
     },
     {
@@ -112,119 +113,112 @@
     {
       "name": "ADMIT_WEEKDAY",
       "type": "Categorical",
-      "size": 8,
+      "size": 7,
       "i2s": [
-        "5",
-        "4",
-        "7",
-        "2",
         "3",
-        "6",
+        "4",
         "1",
-        "INVALID"
+        "2",
+        "7",
+        "5",
+        "6"
       ]
     },
     {
       "name": "PAT_AGE",
-      "type": "Categorical",
-      "size": 27,
+      "type": "Ordinal",
+      "size": 23,
       "i2s": [
-        "13",
+        "00",
         "01",
-        "15",
-        "12",
-        "11",
-        "10",
-        "14",
-        "16",
-        "18",
-        "23",
-        "24",
-        "19",
-        "17",
-        "20",
-        "21",
-        "26",
-        "25",
-        "22",
-        "07",
-        "09",
-        "08",
+        "02",
+        "03",
+        "04",
         "05",
         "06",
-        "04",
-        "00",
-        "03",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
         "INVALID"
       ]
     },
     {
       "name": "RISK_MORTALITY",
-      "type": "Categorical",
-      "size": 6,
+      "type": "Ordinal",
+      "size": 5,
       "i2s": [
-        "1",
-        "3",
-        "2",
-        "4",
         "0",
-        "INVALID"
+        "1",
+        "2",
+        "3",
+        "4"
       ]
     },
     {
       "name": "ILLNESS_SEVERITY",
-      "type": "Categorical",
-      "size": 6,
+      "type": "Ordinal",
+      "size": 5,
       "i2s": [
+        "0",
         "1",
         "2",
         "3",
-        "4",
-        "0",
-        "INVALID"
+        "4"
       ]
     },
     {
       "name": "LENGTH_OF_STAY",
       "type": "Integer",
       "min": 1,
-      "max": 9999
+      "max": 986
     },
     {
       "name": "TOTAL_CHARGES",
       "type": "Float",
       "min": 0.0,
-      "max": 3500000.0
+      "max": 3293072.0
     },
     {
       "name": "TOTAL_NON_COV_CHARGES",
       "type": "Float",
-      "min": 0,
-      "max": 3500000.0
+      "min": 0.0,
+      "max": 969641.0
     },
     {
       "name": "TOTAL_CHARGES_ACCOMM",
       "type": "Float",
       "min": 0.0,
-      "max": 3500000.0
+      "max": 974433.0
     },
     {
       "name": "TOTAL_NON_COV_CHARGES_ACCOMM",
       "type": "Float",
       "min": 0.0,
-      "max": 3500000.0
+      "max": 412751.0
     },
     {
       "name": "TOTAL_CHARGES_ANCIL",
       "type": "Float",
       "min": 0.0,
-      "max": 3500000.0
+      "max": 2994631.0
     },
     {
       "name": "TOTAL_NON_COV_CHARGES_ANCIL",
       "type": "Float",
       "min": 0.0,
-      "max": 3500000.0
+      "max": 642921.0
     }
   ]
 }

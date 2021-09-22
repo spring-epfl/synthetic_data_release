@@ -1,23 +1,24 @@
 {
-  "nIter": 2,
+  "nIter": 15,
   "sizeRawT": 1000,
   "sizeSynT": 1000,
-  "nSynT": 5,
-  "nTargets": 1,
-  "Targets": ["ID14086"],
-  "TestRecords": ["ID59196", "ID61105"],
+  "nSynT": 10,
+  "nTargets": 0,
+  "Targets": ["ID26241", "ID31432", "ID27428", "ID29265", "ID14086"],
+  "TestRecords": ["ID71120", "ID84282", "ID88763", "ID79216", "ID92777"],
   "generativeModels": {
-    "IndependentHistogram": [[10]]
+    "BayesianNet": [[25, 1]],
+    "PrivBayes": [[25, 1, 1.0]]
   },
   "sanitisationTechniques": {
     "SanitiserNHS": [[10, 1, 0.99, 10, [], ["PAT_STATE", "SEX_CODE", "RACE", "ETHNICITY", "PAT_AGE"]]]
   },
-  "dataFilter": {
-    "train": ["DISCHARGE", "2013"],
-    "test": ["DISCHARGE", "2014"]
-  },
   "utilityTasks": {
     "RandForestClass": [["RISK_MORTALITY"]]
+  },
+  "dataFilter": {
+    "train": "DISCHARGE in ['2013Q1', '2013Q2', '2013Q3', '2013Q4']",
+    "test": "DISCHARGE in ['2014Q1', '2014Q2', '2014Q3', '2014Q4']"
   }
 }
 

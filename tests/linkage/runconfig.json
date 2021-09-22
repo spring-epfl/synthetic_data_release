@@ -1,15 +1,16 @@
 {
-  "nIter": 2,
+  "nIter": 15,
   "sizeRawA": 10000,
-  "nSynA": 5,
-  "nShadows": 2,
+  "nSynA": 10,
+  "nShadows": 10,
   "sizeRawT": 1000,
   "sizeSynT": 1000,
   "nSynT": 5,
-  "nTargets": 1,
-  "Targets": ["ID26241"],
+  "nTargets": 0,
+  "Targets": ["ID26241", "ID31432", "ID27428", "ID29265", "ID14086"],
   "generativeModels": {
-    "IndependentHistogram": [[25]]
+    "BayesianNet": [[25, 1]],
+    "PrivBayes": [[25, 1, 1.0]]
   },
   "sanitisationTechniques": {
     "SanitiserNHS": [[10, 1, 0.99, 10, [], ["PAT_STATE", "SEX_CODE", "RACE", "ETHNICITY", "PAT_AGE"]]]

@@ -1,5 +1,5 @@
 # Privacy evaluation framework for synthetic data publishing
-Implementation of a privacy evaluation framework for synthetic data publishing
+A practical framework to evaluate the privacy-utility tradeoff of synthetic data publishing 
 
 Based on "Synthetic Data - Anonymisation Groundhog Day, Theresa Stadler, Bristena Oprisanu, and Carmela Troncoso, [arXiv](https://arxiv.org/abs/2011.07018), 2020"
 
@@ -59,7 +59,8 @@ To run a privacy evaluation with respect to the privacy concern of linkability y
 python linkage_cli.py -D data/texas -RC tests/linkage/runconfig.json -O tests/linkage
 ```
 
-The results file produced after successfully running the script can be parsed with the function `load_results_mia` provided in `utils/analyse_results.py`. 
+The results file produced after successfully running the script will be written to `tests/linkage` and can be parsed with the function `load_results_linkage` provided in `utils/analyse_results.py`. 
+
 
 To run a privacy evaluation with respect to the privacy concern of inference you can run
 
@@ -67,5 +68,14 @@ To run a privacy evaluation with respect to the privacy concern of inference you
 python inference_cli.py -D data/texas -RC tests/inference/runconfig.json -O tests/inference
 ```
 
-The results file produced after successfully running the script can be parsed with the function `load_results_ai` provided in `utils/analyse_results.py`.
+The results file produced after successfully running the script can be parsed with the function `load_results_inference` provided in `utils/analyse_results.py`.
+
+
+To run a utility evaluation with respect to a simple classification task as utility function run
+
+```
+python utility_cli.py -D data/texas -RC tests/utility/runconfig.json -O tests/utility
+```
+
+The results file produced after successfully running the script can be parsed with the function `load_results_utility` provided in `utils/analyse_results.py`.
 

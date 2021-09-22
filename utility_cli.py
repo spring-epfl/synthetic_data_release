@@ -12,7 +12,6 @@ from argparse import ArgumentParser
 from utils.datagen import load_s3_data_as_df, load_local_data_as_df
 from utils.utils import json_numpy_serialzer
 from utils.logging import LOGGER
-from utils.constants import *
 
 from sanitisation_techniques.sanitiser import SanitiserNHS
 from generative_models.data_synthesiser import BayesianNet, PrivBayes, IndependentHistogram
@@ -64,11 +63,9 @@ def main():
     #### GAME INPUTS #######
     ########################
     # Train test split
-    filterExpression = runconfig['dataFilter']
-    rawTrain = rawPop[rawPop[filterExpression['train'][0]].str.contains(filterExpression['train'][1])]
-    rawTest = rawPop[rawPop[filterExpression['test'][0]].str.contains(filterExpression['test'][1])]
+    rawTrain = rawPop.query(runconfig['dataFilter']['train'])
+    rawTest = rawPop.query(runconfig['dataFilter']['test'])
 
-    ## Game inputs
     # Pick targets
     targetIDs = choice(list(rawTrain.index), size=runconfig['nTargets'], replace=False).tolist()
 
@@ -201,7 +198,6 @@ def main():
             LOGGER.info(f'Start: Evaluation for model {GenModel.__name__}...')
             GenModel.fit(rawTout)
             synTwithoutTarget = [GenModel.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
-            synLabelsOut = [LABEL_OUT for _ in range(runconfig['nSynT'])]
 
             # Util evaluation for synthetic without all targets
             for ut in utilityTasks:
@@ -222,7 +218,6 @@ def main():
                 resultsAggUtility[ut.__name__][GenModel.__name__]['TargetID'].append('OUT')
                 resultsAggUtility[ut.__name__][GenModel.__name__]['Accuracy'].append(mean(predErrorAggr))
 
-
             for tid in targetIDs:
                 LOGGER.info(f'Target: {tid}')
                 target = targets.loc[[tid]]
@@ -230,16 +225,12 @@ def main():
                 rawTin = rawTout.append(target)
                 GenModel.fit(rawTin)
                 synTwithTarget = [GenModel.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
-                synLabelsIn = [LABEL_IN for _ in range(runconfig['nSynT'])]
-
-                synT = synTwithoutTarget + synTwithTarget
-                synTlabels = synLabelsOut + synLabelsIn
 
                 # Util evaluation for synthetic with this target
                 for ut in utilityTasks:
                     predErrorTargets = []
                     predErrorAggr = []
-                    for syn in synTwithoutTarget:
+                    for syn in synTwithTarget:
                         ut.train(syn)
                         predErrorTargets.append(ut.evaluate(testRecords))
                         predErrorAggr.append(ut.evaluate(rawTest))
@@ -251,7 +242,8 @@ def main():
 
                     resultsAggUtility[ut.__name__][GenModel.__name__]['TargetID'].append(tid)
                     resultsAggUtility[ut.__name__][GenModel.__name__]['Accuracy'].append(mean(predErrorAggr))
-            del synT, synTwithoutTarget, synTwithTarget
+
+            del synTwithoutTarget, synTwithTarget
 
             LOGGER.info(f'Finished: Evaluation for model {GenModel.__name__}.')
 
@@ -284,10 +276,6 @@ def main():
                 rawTin = rawTout.append(target)
                 sanIn = San.sanitise(rawTin)
 
-                sanT = [sanOut, sanIn]
-                sanTLabels = [LABEL_OUT, LABEL_IN]
-
-
                 for ut in utilityTasks:
                     predErrorTargets = []
                     predErrorAggr = []
@@ -304,7 +292,7 @@ def main():
                     resultsAggUtility[ut.__name__][San.__name__]['TargetID'].append(tid)
                     resultsAggUtility[ut.__name__][San.__name__]['Accuracy'].append(mean(predErrorAggr))
 
-            del sanT, sanOut, sanIn
+            del sanOut, sanIn
 
             LOGGER.info(f'Finished: Evaluation for model {San.__name__}.')
 
@@ -319,6 +307,7 @@ def main():
 
     with open(path.join(f'{args.outdir}', f'{outfile}.json'), 'w') as f:
         json.dump(resultsAggUtility, f, indent=2, default=json_numpy_serialzer)
+
 
 if __name__ == "__main__":
     main()
