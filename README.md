@@ -19,7 +19,31 @@ The module `generative_models` so far includes:
 - `PATE-GAN`: A differentially private generative adversarial network adapted from its original [implementation](https://bitbucket.org/mvdschaar/mlforhealthlabpub/src/82d7f91d46db54d256ff4fc920d513499ddd2ab8/alg/pategan/)
 
 # Setup
-## Requirements
+
+## Docker Distribution
+
+For your convenience, Synthetic Data is also distributed as a ready-to-use Docker image containing Python 3.9 and CUDA 11.4.2, along with all dependencies required by Synthetic Data.
+
+**Note:** This distribution includes CUDA binaries, before downloading the image, ensure to read [its EULA](https://docs.nvidia.com/cuda/eula/index.html) and to agree to its terms.
+
+Pull the image and run a container (and bind a volume where you want to save the data):
+
+```
+docker pull springepfl/synthetic-data:latest
+docker run -it --rm -v "$(pwd)/output:/output" springepfl/synthetic-data
+```
+
+The Synthetic Data directory is placed at the root directory of the container.
+```
+cd /synthetic_data_release
+```
+
+You should now be able to run the examples without encountering any problems.
+
+
+## Direct Installation
+
+### Requirements
 The framework and its building blocks have been developed and tested under Python 3.6 and 3.7
 
 We recommend to create a virtual environment for installing all dependencies and running the code
@@ -29,7 +53,7 @@ source pyvenv3/bin/activate
 pip install -r requirements.txt
 ```
 
-## Dependencies
+### Dependencies
 The `CTGAN` model depends on a fork of the original model training algorithm that can be found here
 [CTGAN-SPRING](https://github.com/spring-epfl/CTGAN.git)
 
