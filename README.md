@@ -84,6 +84,7 @@ python linkage_cli.py -D data/texas -RC tests/linkage/runconfig.json -O tests/li
 ```
 
 The results file produced after successfully running the script will be written to `tests/linkage` and can be parsed with the function `load_results_linkage` provided in `utils/analyse_results.py`. 
+A jupyter notebook to visualise and analyse the results is included at `notebooks/Analyse Results.ipynb`. 
 
 
 To run a privacy evaluation with respect to the privacy concern of inference you can run
@@ -93,6 +94,7 @@ python inference_cli.py -D data/texas -RC tests/inference/runconfig.json -O test
 ```
 
 The results file produced after successfully running the script can be parsed with the function `load_results_inference` provided in `utils/analyse_results.py`.
+A jupyter notebook to visualise and analyse the results is included at `notebooks/Analyse Results.ipynb`. 
 
 
 To run a utility evaluation with respect to a simple classification task as utility function run
