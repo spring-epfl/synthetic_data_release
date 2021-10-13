@@ -44,14 +44,16 @@ You should now be able to run the examples without encountering any problems.
 ## Direct Installation
 
 ### Requirements
-The framework and its building blocks have been developed and tested under Python 3.6 and 3.7
+The framework and its building blocks have been developed and tested under Python 3.9 .
 
 We recommend to create a virtual environment for installing all dependencies and running the code
 ```
 python3 -m venv pyvenv3
 source pyvenv3/bin/activate
-pip install -r requirements.txt
+pip install numpy==1.19.5 && pip install -r requirements.txt
 ```
+
+Note: Some people encountered problems due to the API of Numpy having changed between versions, to ensure all dependencies are compiled against the same Numpy version, it needs to be installed first.
 
 ### Dependencies
 The `CTGAN` model depends on a fork of the original model training algorithm that can be found here
