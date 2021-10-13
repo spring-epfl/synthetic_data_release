@@ -245,12 +245,26 @@ def plt_per_target_pg(results, models, resFilter=('FeatureSet', 'Naive')):
     """ Plot per record average privacy gain. """
     results = results[results[resFilter[0]] == resFilter[1]]
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 6))
     pointplot(results, 'TargetModel', 'PrivacyGain', 'TargetID', ax, models)
 
     ax.set_title(f'Attack on {resFilter[0]}: {resFilter[1]}', fontsize=FSIZELABELS)
     ax.legend(loc='upper center', bbox_to_anchor=(.5, 1.3), ncol=5, title='TargetID')
     ax.set_ylabel('$\mathtt{PG}$', fontsize=FSIZELABELS)
+
+    return fig
+
+
+def plt_avg_accuracy(results, models):
+    fig, ax = plt.subplots(figsize=(12, 5))
+
+    pltdata = results[results['TargetID'] == 'OUT']
+
+    boxplot(pltdata, 'TargetModel', 'Accuracy', 'LabelVar', ax, models)
+
+    ax.hlines(0.2, *ax.get_xlim(), 'grey', '--')
+    ax.set_ylabel('$\mathtt{Accuracy}$', fontsize=FSIZELABELS)
+    ax.set_xlabel('')
 
     return fig
 
@@ -272,6 +286,21 @@ def pointplot(data, x, y, hue, ax, order):
 
     # Set x- and y-label
     ax.set_xlabel('')
+
+    # Resize y-tick labels
+    for tick in ax.yaxis.get_major_ticks():
+        tick.label.set_fontsize(FSIZETICKS)
+
+    # Resize x-tick labels
+    for tick in ax.xaxis.get_major_ticks():
+        tick.label.set_fontsize(FSIZETICKS)
+
+
+def boxplot(data, x, y, hue, ax, order, hue_order=None):
+    sns.boxenplot(data=data, y=y,
+                  x=x, hue=hue,
+                  order=order, hue_order=hue_order,
+                  ax=ax, dodge=True)
 
     # Resize y-tick labels
     for tick in ax.yaxis.get_major_ticks():
