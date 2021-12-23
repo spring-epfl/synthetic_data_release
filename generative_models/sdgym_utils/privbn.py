@@ -29,7 +29,6 @@ class PrivBN(LegacySingleTableBaseline):
     """docstring for PrivBN."""
 
     def __init__(self, epsilon=1, theta=20, max_samples=25000):
-        # self.privbayes_bin = os.getenv('PRIVBAYES_BIN', 'privbayes/privBayes.bin')
         self.privbayes_bin = PRIVBAYES_BN
         if not os.path.exists(self.privbayes_bin):
             raise RuntimeError('privbayes binary not found. Please set PRIVBAYES_BIN')
