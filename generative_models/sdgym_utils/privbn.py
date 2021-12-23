@@ -15,10 +15,10 @@ from sdgym.constants import CATEGORICAL, ORDINAL
 from sdgym.synthesizers.base import LegacySingleTableBaseline
 from sdgym.synthesizers.utils import Transformer
 
+from utils.logging import LOGGER
+
 cwd = os.path.dirname(__file__)
 PRIVBAYES_BN = os.path.join(cwd, 'privbayes/privBayes.bin')
-LOGGER = logging.getLogger(__name__)
-
 
 def try_mkdirs(dir):
     if not os.path.isdir(dir):
@@ -45,7 +45,7 @@ class PrivBN(LegacySingleTableBaseline):
         self.meta = None
 
     def fit(self, real_data, table_metadata):
-        LOGGER.info("Fitting %s", self.__class__.__name__)
+        LOGGER.debug("Fitting %s", self.__class__.__name__)
         self.columns, categoricals = self._get_columns(real_data, table_metadata)
         real_data = real_data[self.columns]
 
@@ -71,7 +71,7 @@ class PrivBN(LegacySingleTableBaseline):
         self.meta = Transformer.get_metadata(self.model_data, categoricals, ())
 
     def sample(self, n):
-        LOGGER.info("Sampling %s", self.__class__.__name__)
+        LOGGER.debug("Sampling %s", self.__class__.__name__)
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = pathlib.Path(tmpdir)
@@ -116,10 +116,10 @@ class PrivBN(LegacySingleTableBaseline):
 
             privbayes = os.path.realpath(tmpdir / 'privBayes.bin')
             arguments = [privbayes, 'real', str(n), '1', str(self.epsilon), str(self.theta)]
-            LOGGER.info('Calling %s', ' '.join(arguments))
+            LOGGER.debug('Calling %s', ' '.join(arguments))
             start = datetime.utcnow()
             subprocess.call(arguments, cwd=tmpdir)
-            LOGGER.info('Elapsed %s', datetime.utcnow() - start)
+            LOGGER.debug('Elapsed %s', datetime.utcnow() - start)
 
             sampled_data = np.loadtxt(tmpdir / f'output/syn_real_eps{int(self.epsilon)}_theta{self.theta}_iter0.dat')
             sampled_data = pd.DataFrame(sampled_data, columns=self.transformed_columns)

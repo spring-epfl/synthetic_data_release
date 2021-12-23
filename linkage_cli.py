@@ -107,10 +107,6 @@ def main():
             elif gm == 'CTGAN':
                 for params in paramsList:
                     gmList.append(CTGAN(metadata, *params))
-            elif gm == 'PATEGAN':
-                for params in paramsList:
-                    gmList.append(PATEGAN(metadata, *params))
-
             elif gm == 'PrivBayesSDGym':
                 for params in paramsList:
                     gmList.append(PrivBaySDGym(metadata, *params))
