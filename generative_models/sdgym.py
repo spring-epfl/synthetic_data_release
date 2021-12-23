@@ -1,4 +1,4 @@
-from generative_models.SDGym.sdgym.synthesizers.privbn import PrivBN
+from generative_models.sdgym_utils.privbn import PrivBN
 from generative_models.generative_model import GenerativeModel
 from utils.constants import *
 
