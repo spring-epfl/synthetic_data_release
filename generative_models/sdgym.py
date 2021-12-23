@@ -17,6 +17,7 @@ class PrivBaySDGym(GenerativeModel):
 
         self.trained = False
         self.datatype = DataFrame
+        self.multiprocess = False
 
         self.__name__ = f'PrivBaySDGymEps{epsilon}'
 
