@@ -10,9 +10,6 @@
   "Targets": ["ID26241", "ID31432", "ID27428", "ID29265", "ID14086"],
   "generativeModels": {
     "BayesianNet": [[25, 1]],
-    "PrivBayes": [[25, 1, 1.0]]
-  },
-  "sanitisationTechniques": {
-    "SanitiserNHS": [[10, 1, 0.99, 10, [], ["PAT_STATE", "SEX_CODE", "RACE", "ETHNICITY", "PAT_AGE"]]]
+    "PrivBayesSDGym": [[1.0]]
   }
 }

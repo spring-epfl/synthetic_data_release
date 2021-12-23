@@ -7,6 +7,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 	// arguments [privbayes, 'real', str(n), '1', str(eps), str(self.theta)]
+	cout.rdbuf(NULL);
 	if (argc < 4) {
 		printf("incorrect args. ");
 		printf("./main <data> <sample> <iter> <theta1> <theta2> ...");
@@ -25,12 +26,11 @@ int main(int argc, char *argv[]) {
 		cout << thetas.back() << "\t";
 	}
 	cout << endl;
-	// arguments
 
 
 	ofstream out("log/" + dataset + ".out");
 	ofstream log("log/" + dataset + ".log");
-	cout.rdbuf(log.rdbuf());
+//	cout.rdbuf(log.rdbuf());
 
 	random_device rd;						//non-deterministic random engine
 	engine eng(rd());						//deterministic engine with a random seed
