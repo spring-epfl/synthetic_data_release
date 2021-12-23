@@ -1,3 +1,301 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dac84a41b87e3f7b7ae067262b6ba9b23419339d5513aa75ca7b77b2eefb84c5
-size 18560
+Age,Sex,Job,Housing,Saving accounts,Checking account,Credit amount,Duration,Purpose,Risk
+64,female,skilled,own,little,no_info,1364.0,10,car,good
+30,female,skilled,own,rich,no_info,960.0,15,furniture/equipment,good
+34,male,unskilled,own,moderate,no_info,1569.0,15,radio/TV,good
+26,female,skilled,rent,little,little,3114.0,18,furniture/equipment,bad
+34,male,management,own,moderate,no_info,1591.0,21,furniture/equipment,good
+26,male,skilled,own,moderate,little,1382.0,24,business,good
+32,male,skilled,own,little,no_info,701.0,12,education,good
+33,male,skilled,own,little,no_info,2051.0,18,radio/TV,good
+30,male,management,own,no_info,little,14179.0,39,furniture/equipment,good
+44,male,skilled,free,quite rich,no_info,10127.0,48,car,bad
+28,female,skilled,own,little,no_info,1382.0,6,radio/TV,good
+39,male,skilled,own,no_info,little,2212.0,20,furniture/equipment,good
+36,male,skilled,own,quite rich,rich,2360.0,15,car,good
+21,male,unskilled,own,little,little,6568.0,24,business,good
+28,male,skilled,free,little,no_info,3343.0,15,furniture/equipment,good
+44,female,skilled,own,no_info,no_info,5943.0,24,radio/TV,bad
+40,male,skilled,own,no_info,no_info,3077.0,30,radio/TV,good
+49,male,skilled,own,little,moderate,8386.0,30,furniture/equipment,bad
+74,male,unskilled,own,little,no_info,3448.0,5,business,good
+44,male,skilled,rent,quite rich,little,2647.0,6,radio/TV,good
+45,male,skilled,own,little,no_info,10875.0,36,car,good
+26,male,management,own,little,no_info,4463.0,36,radio/TV,bad
+39,male,skilled,own,little,little,2522.0,30,radio/TV,good
+63,male,skilled,own,little,little,2924.0,24,car,good
+29,female,skilled,own,little,no_info,2171.0,12,radio/TV,good
+50,male,skilled,own,little,no_info,1559.0,24,business,good
+34,female,management,own,little,moderate,2064.0,24,furniture/equipment,bad
+35,male,unskilled,own,rich,moderate,1941.0,18,business,good
+25,male,unskilled,own,little,moderate,685.0,12,car,bad
+40,male,skilled,rent,no_info,no_info,7824.0,28,car,good
+25,male,skilled,rent,moderate,moderate,1264.0,15,car,bad
+28,male,skilled,own,little,no_info,2169.0,18,business,bad
+31,male,skilled,own,quite rich,no_info,3430.0,24,radio/TV,good
+28,male,skilled,own,rich,little,2659.0,18,furniture/equipment,good
+25,male,unskilled,own,little,moderate,4746.0,45,radio/TV,bad
+40,male,unskilled,own,no_info,little,1647.0,21,car,bad
+44,female,management,free,little,moderate,12579.0,24,car,bad
+29,female,skilled,own,little,little,1893.0,12,car,good
+26,male,skilled,own,little,little,4788.0,48,car,good
+26,female,skilled,own,little,moderate,9960.0,48,furniture/equipment,bad
+27,male,skilled,own,little,moderate,1391.0,9,business,good
+34,male,management,free,little,little,2910.0,24,car,good
+35,male,skilled,own,little,moderate,2576.0,7,radio/TV,good
+20,female,skilled,rent,rich,no_info,3186.0,15,car,good
+43,female,unskilled,own,little,no_info,1459.0,15,radio/TV,good
+35,male,management,own,little,no_info,3780.0,18,furniture/equipment,good
+48,male,skilled,own,little,little,1024.0,24,radio/TV,bad
+37,male,skilled,own,little,little,3620.0,36,furniture/equipment,good
+24,female,skilled,rent,little,little,652.0,12,furniture/equipment,good
+55,female,skilled,own,little,little,1603.0,24,radio/TV,good
+26,female,skilled,own,quite rich,no_info,1386.0,12,car,bad
+24,female,skilled,rent,little,no_info,1554.0,6,radio/TV,good
+41,male,unskilled,own,little,no_info,719.0,12,education,bad
+38,female,skilled,own,no_info,no_info,1240.0,12,radio/TV,good
+30,male,management,own,no_info,no_info,11054.0,36,car,good
+35,male,skilled,free,little,no_info,1471.0,15,radio/TV,good
+40,female,skilled,rent,little,moderate,3001.0,18,furniture/equipment,good
+36,male,skilled,own,no_info,no_info,3079.0,36,car,good
+34,female,unskilled,free,little,moderate,1837.0,24,education,bad
+48,male,unskilled,rent,little,little,2241.0,10,car,good
+36,male,skilled,free,no_info,moderate,2760.0,24,car,good
+55,female,management,free,little,little,2578.0,12,furniture/equipment,good
+41,male,unskilled,own,quite rich,no_info,2580.0,21,business,bad
+39,male,skilled,free,no_info,rich,1271.0,15,radio/TV,bad
+22,male,skilled,own,moderate,moderate,1514.0,15,repairs,good
+25,female,skilled,own,little,no_info,2238.0,18,radio/TV,good
+31,male,skilled,rent,little,little,2302.0,36,radio/TV,bad
+35,female,unskilled,own,little,little,10722.0,47,car,good
+37,male,skilled,own,little,no_info,3535.0,36,car,good
+42,male,skilled,own,little,no_info,3331.0,12,furniture/equipment,good
+32,male,skilled,own,no_info,no_info,2662.0,18,car,good
+38,male,management,free,little,little,10623.0,30,car,good
+35,female,management,own,little,no_info,1393.0,11,car,good
+24,female,unemployed,rent,no_info,moderate,7472.0,12,car,good
+25,female,unskilled,own,little,rich,2327.0,15,radio/TV,bad
+36,male,skilled,own,no_info,no_info,6304.0,36,business,good
+25,female,skilled,own,no_info,no_info,2394.0,36,radio/TV,good
+30,male,skilled,own,little,little,2121.0,12,car,good
+28,female,management,rent,little,little,2606.0,21,radio/TV,good
+21,male,unskilled,own,little,little,1289.0,12,furniture/equipment,good
+25,male,unemployed,own,little,little,2473.0,18,furniture/equipment,bad
+27,male,unskilled,own,little,little,1168.0,12,car,good
+32,female,unskilled,own,moderate,little,1282.0,24,radio/TV,bad
+36,male,management,free,little,little,1872.0,6,furniture/equipment,good
+22,female,skilled,rent,little,little,1366.0,9,radio/TV,bad
+48,male,skilled,free,no_info,no_info,9277.0,24,car,good
+35,female,skilled,own,little,no_info,1291.0,12,radio/TV,good
+22,female,unskilled,own,little,little,806.0,15,business,good
+48,male,skilled,own,little,no_info,2134.0,9,car,good
+29,male,skilled,own,moderate,moderate,2896.0,24,radio/TV,good
+28,female,skilled,rent,rich,no_info,2603.0,24,car,good
+28,male,unskilled,own,little,no_info,2993.0,21,car,good
+37,male,skilled,own,little,moderate,802.0,15,radio/TV,bad
+33,male,skilled,own,no_info,no_info,3074.0,9,radio/TV,good
+35,male,unskilled,free,no_info,no_info,9055.0,36,education,good
+33,male,skilled,own,rich,no_info,1543.0,6,furniture/equipment,good
+35,male,management,rent,little,moderate,6948.0,36,car,good
+23,female,skilled,rent,little,no_info,7127.0,36,furniture/equipment,bad
+37,male,unskilled,own,little,moderate,1922.0,12,furniture/equipment,bad
+52,female,management,free,no_info,no_info,2133.0,12,car,good
+44,female,management,free,little,little,6419.0,24,car,good
+33,female,skilled,own,little,no_info,2831.0,30,radio/TV,good
+21,female,skilled,own,no_info,no_info,886.0,12,radio/TV,good
+40,male,unskilled,rent,quite rich,no_info,1597.0,10,car,good
+37,male,skilled,rent,little,little,3676.0,6,car,good
+34,male,unskilled,own,little,little,11998.0,30,repairs,bad
+32,male,skilled,own,little,no_info,4594.0,18,radio/TV,good
+46,male,management,own,no_info,no_info,6842.0,24,car,good
+42,male,skilled,own,no_info,moderate,2427.0,18,business,good
+36,male,management,own,little,no_info,1278.0,24,radio/TV,good
+40,male,management,own,little,little,3857.0,30,car,good
+32,male,skilled,free,rich,moderate,1136.0,9,education,bad
+41,female,unskilled,own,little,moderate,5954.0,42,business,good
+31,female,skilled,rent,no_info,no_info,2901.0,10,car,good
+45,male,skilled,own,little,little,2303.0,24,car,bad
+42,male,management,free,little,little,7763.0,48,car,bad
+23,female,unskilled,own,little,moderate,3573.0,12,radio/TV,good
+43,male,skilled,own,no_info,moderate,2899.0,18,car,good
+23,male,skilled,rent,little,rich,1297.0,12,radio/TV,good
+36,female,skilled,own,little,rich,2247.0,12,car,good
+24,male,skilled,own,little,rich,5848.0,36,radio/TV,good
+66,male,management,free,little,little,1526.0,12,car,good
+29,female,management,own,little,no_info,1412.0,12,business,good
+29,male,skilled,own,no_info,no_info,1169.0,18,radio/TV,good
+29,female,skilled,own,rich,little,3357.0,21,radio/TV,good
+31,male,skilled,own,no_info,no_info,929.0,24,furniture/equipment,good
+25,male,unskilled,own,little,moderate,866.0,18,radio/TV,good
+49,female,skilled,own,little,little,428.0,6,furniture/equipment,good
+23,female,skilled,own,quite rich,little,4281.0,33,furniture/equipment,bad
+25,female,skilled,rent,little,little,1882.0,18,radio/TV,bad
+46,male,skilled,free,little,little,6331.0,48,car,bad
+27,male,unskilled,own,no_info,no_info,1309.0,10,car,bad
+30,male,management,own,little,little,1823.0,24,radio/TV,bad
+32,female,skilled,rent,no_info,little,1285.0,24,car,bad
+29,male,unskilled,own,little,little,3590.0,12,furniture/equipment,good
+28,female,management,own,moderate,rich,2923.0,21,car,good
+20,female,skilled,rent,quite rich,no_info,2221.0,15,furniture/equipment,good
+44,male,skilled,own,quite rich,no_info,2375.0,24,business,good
+27,male,skilled,own,no_info,no_info,1221.0,6,furniture/equipment,good
+36,male,skilled,own,no_info,no_info,6742.0,30,radio/TV,good
+61,male,skilled,free,no_info,moderate,1239.0,18,education,good
+29,male,skilled,rent,no_info,no_info,7166.0,42,radio/TV,good
+30,female,skilled,own,little,no_info,8133.0,36,car,good
+29,male,unskilled,own,no_info,rich,1494.0,4,car,good
+25,male,skilled,own,little,moderate,4933.0,39,radio/TV,bad
+35,male,skilled,own,moderate,no_info,2753.0,9,radio/TV,good
+27,male,skilled,own,little,little,3552.0,24,furniture/equipment,bad
+34,female,management,own,little,moderate,1501.0,9,education,bad
+28,male,skilled,own,little,no_info,1413.0,24,radio/TV,good
+30,male,skilled,free,moderate,moderate,2862.0,36,car,good
+24,female,skilled,own,little,little,3190.0,18,radio/TV,bad
+37,male,management,own,quite rich,no_info,12749.0,48,radio/TV,good
+27,male,skilled,own,little,little,1657.0,12,furniture/equipment,good
+29,female,skilled,rent,rich,moderate,7758.0,24,car,good
+25,female,skilled,own,no_info,moderate,2762.0,12,furniture/equipment,bad
+28,male,unskilled,own,little,little,1797.0,13,business,good
+23,female,skilled,own,little,no_info,2288.0,21,furniture/equipment,good
+32,male,skilled,own,quite rich,no_info,2978.0,6,furniture/equipment,good
+44,male,skilled,own,little,little,1553.0,18,furniture/equipment,bad
+31,male,unskilled,own,moderate,moderate,9857.0,36,business,good
+22,male,skilled,own,quite rich,little,2828.0,24,furniture/equipment,good
+23,female,skilled,rent,little,little,2406.0,30,furniture/equipment,bad
+21,male,skilled,rent,little,little,902.0,12,education,bad
+37,female,skilled,own,little,moderate,3612.0,18,furniture/equipment,good
+60,female,management,free,moderate,moderate,14782.0,60,vacation/others,bad
+26,female,skilled,own,little,rich,3749.0,24,furniture/equipment,good
+29,female,skilled,own,no_info,little,915.0,24,car,bad
+28,male,skilled,own,little,moderate,1068.0,6,radio/TV,good
+42,male,management,own,little,no_info,10366.0,60,car,good
+26,female,skilled,own,little,no_info,2404.0,18,radio/TV,good
+61,male,skilled,own,rich,moderate,1512.0,15,repairs,bad
+33,male,skilled,own,little,moderate,1414.0,8,radio/TV,good
+51,female,skilled,own,moderate,no_info,682.0,12,car,good
+31,male,skilled,own,moderate,no_info,5742.0,36,business,good
+31,female,management,own,quite rich,no_info,2782.0,21,car,good
+25,female,skilled,rent,little,moderate,2969.0,12,furniture/equipment,bad
+64,female,skilled,own,moderate,no_info,1409.0,13,radio/TV,good
+39,male,unskilled,own,little,no_info,426.0,6,radio/TV,good
+29,male,skilled,own,little,moderate,1103.0,12,radio/TV,good
+33,male,management,own,little,moderate,4439.0,18,business,good
+50,female,unskilled,own,little,rich,1047.0,6,education,good
+37,male,skilled,own,no_info,no_info,7409.0,36,business,good
+49,male,unskilled,own,little,no_info,640.0,12,car,good
+34,female,skilled,own,little,little,1842.0,36,car,bad
+55,female,unemployed,free,little,little,1190.0,18,repairs,bad
+67,male,skilled,own,no_info,little,1169.0,6,radio/TV,good
+33,male,skilled,own,little,rich,6289.0,42,business,good
+23,male,skilled,rent,rich,no_info,3368.0,15,car,good
+38,male,skilled,own,little,no_info,5954.0,30,radio/TV,good
+51,male,skilled,free,little,rich,2892.0,24,furniture/equipment,good
+20,female,skilled,rent,no_info,no_info,4675.0,12,car,good
+63,male,skilled,own,no_info,no_info,1520.0,15,furniture/equipment,good
+26,female,unskilled,rent,little,little,3599.0,21,furniture/equipment,good
+40,male,skilled,own,little,no_info,1585.0,24,furniture/equipment,good
+42,male,skilled,free,moderate,no_info,1346.0,6,radio/TV,good
+36,male,skilled,own,little,no_info,4165.0,18,business,bad
+36,male,management,own,little,no_info,3275.0,21,car,good
+24,male,skilled,rent,moderate,little,6187.0,30,car,good
+23,female,skilled,rent,little,little,1442.0,24,car,bad
+37,male,skilled,own,no_info,no_info,10222.0,48,radio/TV,good
+22,male,skilled,own,little,moderate,2039.0,24,radio/TV,bad
+34,female,management,rent,little,moderate,3017.0,12,furniture/equipment,good
+46,male,skilled,rent,little,moderate,1223.0,12,car,bad
+25,male,skilled,own,no_info,no_info,999.0,24,radio/TV,good
+65,male,skilled,free,little,little,2600.0,18,radio/TV,bad
+30,female,management,own,little,moderate,5096.0,48,furniture/equipment,bad
+20,female,skilled,rent,little,little,2039.0,18,furniture/equipment,bad
+26,male,skilled,rent,no_info,no_info,2445.0,12,car,good
+30,male,skilled,rent,little,no_info,1740.0,6,radio/TV,good
+24,female,skilled,rent,rich,moderate,433.0,6,education,bad
+25,male,skilled,own,no_info,moderate,1484.0,12,radio/TV,bad
+25,male,skilled,own,no_info,no_info,3105.0,24,radio/TV,good
+44,male,skilled,own,quite rich,no_info,1163.0,12,car,good
+57,female,management,rent,rich,little,1231.0,24,radio/TV,good
+66,male,management,own,little,rich,1908.0,30,business,bad
+35,male,skilled,rent,moderate,no_info,1204.0,6,car,good
+40,male,unskilled,rent,little,little,684.0,12,education,bad
+38,female,skilled,own,little,no_info,1533.0,24,radio/TV,good
+49,male,unskilled,own,no_info,rich,3656.0,30,radio/TV,good
+51,male,skilled,free,no_info,little,7511.0,18,car,bad
+60,male,management,own,no_info,moderate,6468.0,20,car,good
+55,male,skilled,own,little,little,6872.0,24,furniture/equipment,bad
+22,male,skilled,free,little,little,3973.0,14,car,good
+28,male,skilled,own,quite rich,rich,939.0,12,car,bad
+30,male,skilled,own,no_info,moderate,2028.0,12,car,good
+34,male,unskilled,free,moderate,moderate,3844.0,48,business,bad
+29,male,skilled,own,little,little,5179.0,36,furniture/equipment,bad
+29,male,skilled,rent,little,little,11816.0,45,business,bad
+29,male,skilled,own,little,no_info,2743.0,28,radio/TV,good
+34,male,management,own,moderate,moderate,6850.0,15,car,bad
+40,male,unskilled,own,little,little,701.0,12,radio/TV,good
+64,male,unskilled,own,no_info,no_info,3832.0,9,education,good
+49,male,skilled,own,moderate,rich,1126.0,9,radio/TV,good
+35,male,skilled,own,quite rich,no_info,2397.0,24,radio/TV,bad
+27,male,skilled,own,little,no_info,1101.0,12,car,good
+47,male,unskilled,own,little,little,1217.0,18,domestic appliances,bad
+25,male,skilled,own,little,rich,5152.0,24,radio/TV,good
+39,male,management,own,little,no_info,6458.0,18,car,bad
+45,male,management,own,little,no_info,6761.0,6,car,good
+27,female,unskilled,own,little,little,3643.0,15,furniture/equipment,good
+30,male,management,own,little,moderate,4455.0,36,business,bad
+33,female,skilled,rent,little,little,3966.0,18,car,bad
+35,male,skilled,own,moderate,no_info,4151.0,24,furniture/equipment,good
+22,male,unskilled,rent,little,moderate,276.0,9,car,good
+35,female,skilled,own,rich,no_info,1592.0,12,furniture/equipment,good
+30,female,management,own,no_info,little,7174.0,42,radio/TV,bad
+36,male,skilled,own,little,no_info,1542.0,12,business,good
+36,female,unskilled,own,rich,no_info,1572.0,21,business,good
+35,female,skilled,free,quite rich,no_info,5324.0,15,car,good
+23,female,unemployed,rent,quite rich,moderate,3758.0,24,radio/TV,good
+61,male,unskilled,own,little,no_info,1255.0,12,car,good
+36,male,skilled,own,little,little,1721.0,15,car,good
+38,male,unskilled,own,little,little,2171.0,12,car,good
+31,male,skilled,own,little,no_info,2775.0,18,car,bad
+40,male,skilled,own,quite rich,no_info,2675.0,22,radio/TV,good
+57,male,management,free,little,moderate,14318.0,36,car,bad
+54,male,skilled,own,little,little,3051.0,48,domestic appliances,bad
+39,male,skilled,free,little,little,10297.0,48,car,bad
+23,female,management,rent,little,moderate,11560.0,24,car,bad
+20,male,skilled,own,no_info,little,2996.0,24,furniture/equipment,bad
+52,male,skilled,own,quite rich,no_info,936.0,9,education,good
+61,male,unskilled,rent,moderate,moderate,2767.0,21,business,bad
+49,male,unskilled,own,no_info,little,1262.0,12,furniture/equipment,good
+38,male,unskilled,own,little,moderate,1308.0,15,repairs,good
+29,male,management,rent,moderate,moderate,9034.0,36,furniture/equipment,bad
+31,female,skilled,own,little,no_info,9566.0,36,radio/TV,good
+24,female,unskilled,own,little,little,1228.0,12,car,bad
+24,male,skilled,own,moderate,moderate,6560.0,48,car,bad
+32,male,unskilled,own,rich,no_info,4526.0,27,furniture/equipment,good
+41,male,skilled,own,moderate,moderate,2503.0,30,business,good
+46,female,unskilled,own,little,rich,2251.0,12,furniture/equipment,good
+26,female,unemployed,rent,little,moderate,1778.0,15,car,bad
+26,female,unskilled,rent,moderate,moderate,4280.0,30,business,bad
+50,male,skilled,rent,quite rich,no_info,1236.0,6,car,good
+58,female,unskilled,own,little,little,1755.0,24,vacation/others,good
+42,female,management,free,little,moderate,8318.0,27,business,bad
+39,male,unskilled,own,little,no_info,7228.0,11,car,good
+43,male,management,own,little,little,15857.0,36,vacation/others,good
+24,male,skilled,own,moderate,moderate,5595.0,72,radio/TV,bad
+27,female,unemployed,own,little,little,750.0,18,education,bad
+31,female,skilled,own,moderate,no_info,1532.0,15,education,good
+28,male,skilled,own,little,moderate,3060.0,48,radio/TV,bad
+56,male,skilled,free,little,rich,4796.0,42,car,good
+23,female,unskilled,rent,little,little,6229.0,36,furniture/equipment,bad
+42,male,skilled,free,little,moderate,6288.0,60,education,bad
+38,female,management,free,little,moderate,12976.0,18,car,bad
+43,male,skilled,own,no_info,no_info,4042.0,24,car,good
+26,male,skilled,own,little,little,759.0,12,car,bad
+32,female,management,own,little,moderate,18424.0,48,vacation/others,bad
+74,male,management,own,little,no_info,4526.0,24,business,good
+31,male,unskilled,own,little,moderate,1410.0,12,education,good
+31,male,management,free,moderate,moderate,7582.0,48,vacation/others,good
+46,male,skilled,free,quite rich,no_info,727.0,10,education,good
+34,male,skilled,own,little,moderate,2415.0,7,radio/TV,good
+46,male,skilled,own,rich,no_info,1149.0,18,radio/TV,good
+36,male,skilled,rent,little,little,7297.0,60,business,bad
+45,male,unskilled,own,quite rich,no_info,1750.0,6,radio/TV,good
+26,female,management,own,little,no_info,10974.0,36,furniture/equipment,bad
+27,male,unemployed,own,rich,rich,709.0,6,car,good
+43,male,skilled,own,little,moderate,4057.0,24,furniture/equipment,bad

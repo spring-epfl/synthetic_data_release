@@ -10,6 +10,7 @@ cwd = path.dirname(__file__)
 from generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
 from generative_models.ctgan import CTGAN
 from generative_models.pate_gan import PATEGAN
+from generative_models.sdgym import PrivBaySDGym
 
 from utils.datagen import *
 
@@ -122,6 +123,29 @@ class TestGenerativeModel(TestCase):
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertTupleEqual(synthetic_data.shape, self.raw.shape)
+
+    def test_priv_bn_sdgym(self):
+        print('\nTest PrivBayes SDGym')
+        ## Test default params
+        gm = PrivBaySDGym(self.metadata)
+        gm.fit(self.raw)
+        synthetic_data = gm.generate_samples(self.sizeS)
+
+        self.assertListEqual(list(synthetic_data), list(self.raw))
+
+        # ## Change privacy param
+        # gm = PrivBayes(self.metadata, epsilon=1e-9)
+        # gm.fit(self.raw)
+        # synthetic_data = gm.generate_samples(self.sizeS)
+        #
+        # self.assertListEqual(list(synthetic_data), list(self.raw))
+        #
+        # ## Fix seed
+        # gm = PrivBayes(self.metadata, seed=SEED)
+        # gm.fit(self.raw)
+        # synthetic_data = gm.generate_samples(self.sizeS)
+        #
+        # self.assertListEqual(list(synthetic_data), list(self.raw))
 
 
 
