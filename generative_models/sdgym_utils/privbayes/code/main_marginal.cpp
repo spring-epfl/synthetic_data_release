@@ -6,8 +6,8 @@ using namespace std;
 #include "methods.h"
 
 int main(int argc, char *argv[]) {
-	// arguments
-	if (argc < 3) {
+	// arguments [privbayes, 'real', str(n), '1', str(eps), str(self.theta)]
+	if (argc < 4) {
 		printf("incorrect args. ");
 		printf("./main <data> <sample> <iter> <theta1> <theta2> ...");
 		return 0;
@@ -17,9 +17,10 @@ int main(int argc, char *argv[]) {
 
 	int nsam = stoi(argv[2]);
 	int niters = stoi(argv[3]);
+	double epsilon = stoi(argv[4]);
 
 	vector<double> thetas;
-	for (int i = 4; i < argc; i++) {
+	for (int i = 5; i < argc; i++) {
 		thetas.push_back(stod(argv[i]));
 		cout << thetas.back() << "\t";
 	}
@@ -39,15 +40,15 @@ int main(int argc, char *argv[]) {
 	for (double theta : thetas) {
 		cout << "theta: " << theta << endl;
 		out << "theta: " << theta << endl;
-		for (double epsilon : {10}) {
-			for (int iter = 0; iter < niters; iter++) {
-				cout << "epsilon: " << epsilon << " iter:" << iter + 1 << endl;
-				bayesian bayesian(eng, tbl, epsilon, theta);
-				bayesian.sampling(nsam);
-				bayesian.syn.printo_file("output/syn_" + dataset + "_eps" + to_string(int(epsilon)) +
-					"_theta" + to_string(int(theta)) + "_iter" + to_string(iter) + ".dat");
-			}
-		}
+
+        for (int iter = 0; iter < niters; iter++) {
+            cout << "epsilon: " << epsilon << " iter:" << iter + 1 << endl;
+            bayesian bayesian(eng, tbl, epsilon, theta);
+            bayesian.sampling(nsam);
+            bayesian.syn.printo_file("output/syn_" + dataset + "_eps" + to_string(int(epsilon)) +
+                "_theta" + to_string(int(theta)) + "_iter" + to_string(iter) + ".dat");
+        }
+
 		cout << endl;
 		out << endl;
 	}

@@ -126,26 +126,29 @@ class TestGenerativeModel(TestCase):
 
     def test_priv_bn_sdgym(self):
         print('\nTest PrivBayes SDGym')
+
         ## Test default params
         gm = PrivBaySDGym(self.metadata)
         gm.fit(self.raw)
         synthetic_data = gm.generate_samples(self.sizeS)
 
         self.assertListEqual(list(synthetic_data), list(self.raw))
+        self.assertEqual(len(synthetic_data), self.sizeS)
 
-        # ## Change privacy param
-        # gm = PrivBayes(self.metadata, epsilon=1e-9)
-        # gm.fit(self.raw)
-        # synthetic_data = gm.generate_samples(self.sizeS)
-        #
-        # self.assertListEqual(list(synthetic_data), list(self.raw))
-        #
-        # ## Fix seed
-        # gm = PrivBayes(self.metadata, seed=SEED)
-        # gm.fit(self.raw)
-        # synthetic_data = gm.generate_samples(self.sizeS)
-        #
-        # self.assertListEqual(list(synthetic_data), list(self.raw))
+        ## Repeat sampling from fitted model
+        synthetic_data = gm.generate_samples(self.sizeS)
+
+        self.assertListEqual(list(synthetic_data), list(self.raw))
+        self.assertEqual(len(synthetic_data), self.sizeS)
+
+        ## Change privacy params
+        gm = PrivBaySDGym(self.metadata, epsilon=10)
+        gm.fit(self.raw)
+        synthetic_data = gm.generate_samples(self.sizeS)
+
+        self.assertListEqual(list(synthetic_data), list(self.raw))
+        self.assertEqual(len(synthetic_data), self.sizeS)
+
 
 
 

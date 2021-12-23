@@ -8,9 +8,9 @@ class PrivBaySDGym(GenerativeModel):
     Differentially private Bayesian network based on the SDGym C++ implementation
     """
 
-    def __init__(self, metadata, theta=20, max_samples=25000):
+    def __init__(self, metadata, epsilon=1, theta=20, max_samples=25000):
         self.metadata = self._read_meta(metadata)
-        self.privbn = PrivBN(theta=theta, max_samples=max_samples)
+        self.privbn = PrivBN(epsilon=epsilon, theta=theta, max_samples=max_samples)
 
         self.trained = False
 

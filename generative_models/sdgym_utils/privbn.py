@@ -28,12 +28,13 @@ def try_mkdirs(dir):
 class PrivBN(LegacySingleTableBaseline):
     """docstring for PrivBN."""
 
-    def __init__(self, theta=20, max_samples=25000):
+    def __init__(self, epsilon=1, theta=20, max_samples=25000):
         # self.privbayes_bin = os.getenv('PRIVBAYES_BIN', 'privbayes/privBayes.bin')
         self.privbayes_bin = PRIVBAYES_BN
         if not os.path.exists(self.privbayes_bin):
             raise RuntimeError('privbayes binary not found. Please set PRIVBAYES_BIN')
 
+        self.epsilon = epsilon
         self.theta = theta
         self.max_samples = max_samples
 
@@ -101,7 +102,6 @@ class PrivBN(LegacySingleTableBaseline):
                         print('C', minn, maxx, file=f)
 
             with open(tmpdir / 'data/real.dat', 'w') as f:
-                # n = len(self.model_data)
                 np.random.shuffle(self.model_data)
                 n = min(n, self.max_samples)
                 for i in range(n):
@@ -116,13 +116,13 @@ class PrivBN(LegacySingleTableBaseline):
                     print(file=f)
 
             privbayes = os.path.realpath(tmpdir / 'privBayes.bin')
-            arguments = [privbayes, 'real', str(n), '1', str(self.theta)]
+            arguments = [privbayes, 'real', str(n), '1', str(self.epsilon), str(self.theta)]
             LOGGER.info('Calling %s', ' '.join(arguments))
             start = datetime.utcnow()
             subprocess.call(arguments, cwd=tmpdir)
             LOGGER.info('Elapsed %s', datetime.utcnow() - start)
 
-            sampled_data = np.loadtxt(tmpdir / 'output/syn_real_eps10_theta{}_iter0.dat'.format(self.theta))
+            sampled_data = np.loadtxt(tmpdir / f'output/syn_real_eps{int(self.epsilon)}_theta{self.theta}_iter0.dat')
             sampled_data = pd.DataFrame(sampled_data, columns=self.transformed_columns)
 
             synthetic_data = self.ht.reverse_transform(sampled_data)
