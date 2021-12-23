@@ -76,6 +76,20 @@ import ctgan
 ```
 from within your virtualenv `python`
 
+#### SDGYm PrivBN
+To use the PrivBayes implementation from [SDGym](https://github.com/sdv-dev/SDGym) need to
+
+1) Install the `sdgym` library via pip
+```bash
+pip install sdgym
+```
+
+2) Compile the PrivBN C++ dependencies
+```bash
+cd generative_models/sdgym_utils/privbayes
+make
+```
+
 # Example runs
 To run a privacy evaluation with respect to the privacy concern of linkability you can run
 
