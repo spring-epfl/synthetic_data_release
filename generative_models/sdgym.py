@@ -1,6 +1,9 @@
+from pandas import DataFrame
+
 from generative_models.sdgym_utils.privbn import PrivBN
 from generative_models.generative_model import GenerativeModel
 from utils.constants import *
+
 
 
 class PrivBaySDGym(GenerativeModel):
@@ -13,6 +16,7 @@ class PrivBaySDGym(GenerativeModel):
         self.privbn = PrivBN(epsilon=epsilon, theta=theta, max_samples=max_samples)
 
         self.trained = False
+        self.datatype = DataFrame
 
         self.__name__ = f'PrivBaySDGymEps{epsilon}'
 
