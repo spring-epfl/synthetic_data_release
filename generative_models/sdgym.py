@@ -14,6 +14,8 @@ class PrivBaySDGym(GenerativeModel):
 
         self.trained = False
 
+        self.__name__ = f'PrivBaySDGymEps{epsilon}'
+
     def fit(self, data):
         self.privbn.fit(data, self.metadata)
 
