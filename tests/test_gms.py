@@ -11,6 +11,8 @@ from generative_models.data_synthesiser import IndependentHistogram, BayesianNet
 from generative_models.ctgan import CTGAN
 from generative_models.pate_gan import PATEGAN
 from generative_models.sdgym import PrivBaySDGym
+from generative_models.mst_utils.mbi.dataset import Dataset, Domain
+from generative_models.mst import MST
 
 from utils.datagen import *
 
@@ -148,6 +150,39 @@ class TestGenerativeModel(TestCase):
 
         self.assertListEqual(list(synthetic_data), list(self.raw))
         self.assertEqual(len(synthetic_data), self.sizeS)
+
+
+    def test_mst(self):
+        print('\nTest MST')
+
+        hist_bins = 25
+        domain_data = {}
+        cmaps = {}
+        for cdict in self.metadata['columns']:
+            cname = cdict['name']
+
+            if cdict['type'] in [CATEGORICAL, ORDINAL]:
+                domain_data[cname] = cdict['size']
+                cmaps[cname] = {c:i for i,c in enumerate(cdict['i2s'])}
+
+            else:
+                domain_data[cname] = hist_bins
+
+        raw_enc = self.raw.copy()
+
+        for c, cmap in cmaps.items():
+            raw_enc[c] = raw_enc[c].map(cmap)
+
+        domain = Domain(domain_data.keys(), domain_data.values())
+        dataset = Dataset(raw_enc, domain)
+
+        epsilon = 1.0
+        delta = 1e-9
+
+        dataset_syn = MST(dataset, epsilon, delta)
+        synthetic_data = dataset_syn.df
+
+        self.assertListEqual(list(synthetic_data), list(self.raw))
 
 
 

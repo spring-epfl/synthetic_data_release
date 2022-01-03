@@ -79,11 +79,11 @@ def load_s3_data_as_df(filename):
 
 def _get_dtype(cd):
     if cd['type'] == FLOAT:
-        return np.float
+        return float
     elif cd['type'] == INTEGER:
-        return np.int
+        return int
     else:
-        return np.object
+        return object
 
 
 def _get_columns(metadata):

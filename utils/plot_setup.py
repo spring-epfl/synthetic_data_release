@@ -26,12 +26,10 @@ def set_style():
                                 'ytick.color': 'k',
                                 'grid.color':'0.7',
                                 'font.family': 'serif',
-                                'font.sans-serif': 'cm',
                                 'text.usetex': True})
 
     plt.rcParams.update({
         'font.family': 'serif',
-        'font.sans-serif': 'cm',
         'text.usetex': True,
         'font.size': 14,
 
