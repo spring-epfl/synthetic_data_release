@@ -5,7 +5,6 @@ from generative_models.generative_model import GenerativeModel
 from utils.constants import *
 
 
-
 class PrivBaySDGym(GenerativeModel):
     """
     Differentially private Bayesian network based on the SDGym C++ implementation
@@ -19,7 +18,7 @@ class PrivBaySDGym(GenerativeModel):
         self.datatype = DataFrame
         self.multiprocess = False
 
-        self.__name__ = f'PrivBaySDGymEps{epsilon}'
+        self.__name__ = f'PrivBaySDGymEps{epsilon}Theta{theta}'
 
     def fit(self, data):
         self.privbn.fit(data, self.metadata)

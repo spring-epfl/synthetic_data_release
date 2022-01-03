@@ -309,7 +309,7 @@ class PrivBayes(BayesianNet):
 
         self.epsilon = float(epsilon)
 
-        self.__name__ = f'PrivBayesEps{self.epsilon}'
+        self.__name__ = f'PrivBayesEps{self.epsilon}Theta{self.degree}Bins{self.histogram_bins}InferMeta{self.infer_ranges}'
 
     @property
     def laplace_noise_scale(self):

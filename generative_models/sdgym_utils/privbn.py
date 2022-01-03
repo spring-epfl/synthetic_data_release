@@ -1,4 +1,3 @@
-import logging
 import os
 import pathlib
 import shutil
@@ -31,7 +30,7 @@ class PrivBN(LegacySingleTableBaseline):
     def __init__(self, epsilon=1, theta=20, max_samples=25000):
         self.privbayes_bin = PRIVBAYES_BN
         if not os.path.exists(self.privbayes_bin):
-            raise RuntimeError('privbayes binary not found. Please set PRIVBAYES_BIN')
+            raise RuntimeError(f'privbayes binary not found. Please make sure privBayes.bin is compiled and available at {PRIVBAYES_BN}')
 
         self.epsilon = epsilon
         self.theta = theta

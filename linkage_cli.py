@@ -251,12 +251,12 @@ def main():
 
             del sanT, sanOut, sanIn
 
-            LOGGER.info(f'Finished: Evaluation for model {San.__name__}.')
+            LOGGER.info(f'Finished: Evaluation for sanitiser {San.__name__}.')
 
-    outfile = f"ResultsMIA_{dname}"
-    LOGGER.info(f"Write results to {path.join(f'{args.outdir}', f'{outfile}')}")
+    outfile = f"ResultsMIA_{dname}.json"
+    LOGGER.info(f"Write results to {path.join(f'{args.outdir}', outfile)}")
 
-    with open(path.join(f'{args.outdir}', f'{outfile}.json'), 'w') as f:
+    with open(path.join(f'{args.outdir}', outfile), 'w') as f:
         json.dump(resultsTargetPrivacy, f, indent=2, default=json_numpy_serialzer)
 
 

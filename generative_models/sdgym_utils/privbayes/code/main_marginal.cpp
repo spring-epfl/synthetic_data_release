@@ -6,7 +6,7 @@ using namespace std;
 #include "methods.h"
 
 int main(int argc, char *argv[]) {
-	// arguments [privbayes, 'real', str(n), '1', str(eps), str(self.theta)]
+	// arguments [privbayes, 'real', str(num_samples), str(num_iters), str(eps), str(theta)]
 	cout.rdbuf(NULL);
 	if (argc < 4) {
 		printf("incorrect args. ");
@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
 
 	ofstream out("log/" + dataset + ".out");
 	ofstream log("log/" + dataset + ".log");
-//	cout.rdbuf(log.rdbuf());
 
 	random_device rd;						//non-deterministic random engine
 	engine eng(rd());						//deterministic engine with a random seed
