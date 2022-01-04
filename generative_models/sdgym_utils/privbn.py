@@ -36,23 +36,51 @@ class PrivBN(LegacySingleTableBaseline):
         self.theta = theta
         self.max_samples = max_samples
 
-        self.columns = []
+        self.original_columns = []
         self.transformed_columns = []
 
         self.ht = None
         self.model_data = None
         self.meta = None
 
+    def _get_columns(self, table, table_metadata):
+        numerical_columns = []
+        categorical_columns = []
+
+        fields_meta = table_metadata['fields']
+
+        for idx, column in enumerate(list(table)):
+            if '.value' in column:
+                cname = column.split('.value')[0]
+
+            else:
+                cname = column
+
+            field_meta = fields_meta[cname]
+            field_type = field_meta['type']
+            if field_type == 'id':
+                continue
+
+            if field_type == CATEGORICAL or field_type == ORDINAL:
+                categorical_columns.append(idx)
+
+            else:
+                numerical_columns.append(idx)
+
+        return categorical_columns, numerical_columns
+
     def fit(self, real_data, table_metadata):
         LOGGER.debug("Fitting %s", self.__class__.__name__)
-        self.columns, categoricals = self._get_columns(real_data, table_metadata)
-        real_data = real_data[self.columns]
+
+        original_categoricals_idx, original_numerical_idx = self._get_columns(real_data, table_metadata)
+        self.original_columns = list(real_data)
+        real_data = real_data[self.original_columns]
 
         self.ht = rdt.HyperTransformer(default_data_type_transformers={
             'categorical': 'LabelEncodingTransformer',
         })
-        self.ht.fit(real_data.iloc[:, categoricals])
-        model_data = self.ht.transform(real_data)
+        self.ht.fit(real_data.iloc[:, original_categoricals_idx])
+        model_data = self.ht.transform(real_data) # NOTE: Transformer reorders columns!
 
         supported = set(model_data.select_dtypes(('number', 'bool')).columns)
         unsupported = set(model_data.columns) - supported
@@ -65,9 +93,10 @@ class PrivBN(LegacySingleTableBaseline):
             unsupported_columns = nulls[nulls].index.tolist()
             raise UnsupportedDataset(f'Null values found in columns {unsupported_columns}')
 
+        transformed_categoricals_idx, transformed_numerical_idx = self._get_columns(model_data, table_metadata)
         self.transformed_columns = list(model_data)
         self.model_data = model_data.to_numpy().copy()
-        self.meta = Transformer.get_metadata(self.model_data, categoricals, ())
+        self.meta = Transformer.get_metadata(self.model_data, transformed_categoricals_idx, ())
 
     def sample(self, n):
         LOGGER.debug("Sampling %s", self.__class__.__name__)
@@ -125,4 +154,4 @@ class PrivBN(LegacySingleTableBaseline):
 
             synthetic_data = self.ht.reverse_transform(sampled_data)
 
-            return synthetic_data[self.columns]
+            return synthetic_data[self.original_columns]
