@@ -5,12 +5,17 @@ apt-get update && \
 apt-get upgrade -y && \
 apt-get autoremove -y && \
 apt-get install --no-install-recommends -y \
+cm-super \
 cython3 \
+dvipng \
 git \
 libfreetype6-dev \
 pkgconf \
 python3-dev \
-python3-pip && \
+python3-pip \
+texlive \
+texlive-latex-extra \
+&& \
 apt-get clean -y && \
 rm -rf /var/lib/apt/lists/*
 

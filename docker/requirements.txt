@@ -1,6 +1,7 @@
 husl==4.0.3
 loguru==0.5.3
 matplotlib==3.4.3
+notebook==6.4.6
 palettable==3.3.0
 pandas==0.25.3
 scipy==1.7.1
