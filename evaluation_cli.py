@@ -5,23 +5,18 @@ Command line interface to evaluate the trade-off between privacy gain and utilit
 from argparse import ArgumentParser
 from pathlib import Path
 import pickle
-import sys
 
 import json
 
 from os import mkdir, path
 from numpy import mean
-from numpy.random import choice, seed
+from numpy.random import choice
 from argparse import ArgumentParser
 
 from utils.datagen import load_s3_data_as_df, load_local_data_as_df
 from utils.utils import json_numpy_serialzer
 from utils.logging import LOGGER
 
-from sanitisation_techniques.sanitiser import SanitiserNHS
-from generative_models.data_synthesiser import BayesianNet, PrivBayes, IndependentHistogram
-from generative_models.ctgan import CTGAN
-from generative_models.pate_gan import PATEGAN
 from predictive_models.predictive_model import RandForestClassTask, LogRegClassTask, LinRegTask
 
 from warnings import simplefilter
@@ -30,8 +25,6 @@ simplefilter('ignore', category=FutureWarning)
 simplefilter('ignore', category=DeprecationWarning)
 
 cwd = path.dirname(__file__)
-
-SEED = 42
 
 
 def main():
@@ -45,16 +38,16 @@ def main():
         help="Name of the dataset to run on"
     )
     datasource.add_argument(
-        "--model",
-        "-m",
-        type=Path,
-        help="Model"
-    )
-    datasource.add_argument(
         "--datapath",
         "-D",
         type=Path,
         help="Relative path to cwd of a local data file"
+    )
+    argparser.add_argument(
+        "--model",
+        "-m",
+        type=Path,
+        help="Model"
     )
     argparser.add_argument(
         "--runconfig",
@@ -72,13 +65,8 @@ def main():
     )
     args = argparser.parse_args()
 
-    model_path: Path = args.model.resolve()
-
-    if not model_path.is_file():
-        sys.stderr.write(f"Model {model_path} not found.\n")
-        sys.exit(1)
-
-    seed(SEED)
+    with args.model.open('br') as fd:
+        model = pickle.load(fd)
 
     # Load runconfig
     with args.runconfig.open() as f:
@@ -129,22 +117,6 @@ def main():
 
     testRecords = rawTest.loc[testRecordIDs, :]
 
-    # List of candidate generative models to evaluate
-    with model_path.open() as fd:
-        model = pickle.load(fd)
-
-    gmList = [model]
-
-    # List of candidate sanitisation techniques to evaluate
-    sanList = []
-    if 'sanitisationTechniques' in runconfig.keys():
-        for name, paramsList in runconfig['sanitisationTechniques'].items():
-            if name == 'SanitiserNHS':
-                for params in paramsList:
-                    sanList.append(SanitiserNHS(metadata, *params))
-            else:
-                raise ValueError(f'Unknown sanitisation technique {name}')
-
     utilityTasks = []
     for taskName, paramsList in runconfig['utilityTasks'].items():
         if taskName == 'RandForestClass':
@@ -160,13 +132,13 @@ def main():
     ##################################
     ######### EVALUATION #############
     ##################################
-    resultsTargetUtility = {ut.__name__: {gm.__name__: {} for gm in gmList + sanList} for ut in utilityTasks}
+    resultsTargetUtility = {ut.__name__: {model.__name__: {}} for ut in utilityTasks}
     resultsAggUtility = {
         ut.__name__: {
-            gm.__name__: {
+            model.__name__: {
                 'TargetID': [],
                 'Accuracy': []
-            } for gm in gmList + sanList
+            }
         } for ut in utilityTasks
     }
 
@@ -225,107 +197,57 @@ def main():
 
         LOGGER.info('Finished: Utility evaluation on Raw.')
 
-        for GenModel in gmList:
-            LOGGER.info(f'Start: Evaluation for model {GenModel.__name__}...')
-            GenModel.fit(rawTout)
-            synTwithoutTarget = [GenModel.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
+        LOGGER.info(f'Start: Evaluation for model {model.__name__}...')
+        model.fit(rawTout)
+        synTwithoutTarget = [model.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
 
-            # Util evaluation for synthetic without all targets
+        # Util evaluation for synthetic without all targets
+        for ut in utilityTasks:
+            resultsTargetUtility[ut.__name__][model.__name__][nr] = {}
+
+            predErrorTargets = []
+            predErrorAggr = []
+            for syn in synTwithoutTarget:
+                ut.train(syn)
+                predErrorTargets.append(ut.evaluate(testRecords))
+                predErrorAggr.append(ut.evaluate(rawTest))
+
+            resultsTargetUtility[ut.__name__][model.__name__][nr]['OUT'] = {
+                'TestRecordID': testRecordIDs,
+                'Accuracy': list(mean(predErrorTargets, axis=0))
+            }
+
+            resultsAggUtility[ut.__name__][model.__name__]['TargetID'].append('OUT')
+            resultsAggUtility[ut.__name__][model.__name__]['Accuracy'].append(mean(predErrorAggr))
+
+        for tid in targetIDs:
+            LOGGER.info(f'Target: {tid}')
+            target = targets.loc[[tid]]
+
+            rawTin = rawTout.append(target)
+            model.fit(rawTin)
+            synTwithTarget = [model.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
+
+            # Util evaluation for synthetic with this target
             for ut in utilityTasks:
-                resultsTargetUtility[ut.__name__][GenModel.__name__][nr] = {}
-
                 predErrorTargets = []
                 predErrorAggr = []
-                for syn in synTwithoutTarget:
+                for syn in synTwithTarget:
                     ut.train(syn)
                     predErrorTargets.append(ut.evaluate(testRecords))
                     predErrorAggr.append(ut.evaluate(rawTest))
 
-                resultsTargetUtility[ut.__name__][GenModel.__name__][nr]['OUT'] = {
+                resultsTargetUtility[ut.__name__][model.__name__][nr][tid] = {
                     'TestRecordID': testRecordIDs,
                     'Accuracy': list(mean(predErrorTargets, axis=0))
                 }
 
-                resultsAggUtility[ut.__name__][GenModel.__name__]['TargetID'].append('OUT')
-                resultsAggUtility[ut.__name__][GenModel.__name__]['Accuracy'].append(mean(predErrorAggr))
+                resultsAggUtility[ut.__name__][model.__name__]['TargetID'].append(tid)
+                resultsAggUtility[ut.__name__][model.__name__]['Accuracy'].append(mean(predErrorAggr))
 
-            for tid in targetIDs:
-                LOGGER.info(f'Target: {tid}')
-                target = targets.loc[[tid]]
+        del synTwithoutTarget, synTwithTarget
 
-                rawTin = rawTout.append(target)
-                GenModel.fit(rawTin)
-                synTwithTarget = [GenModel.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
-
-                # Util evaluation for synthetic with this target
-                for ut in utilityTasks:
-                    predErrorTargets = []
-                    predErrorAggr = []
-                    for syn in synTwithTarget:
-                        ut.train(syn)
-                        predErrorTargets.append(ut.evaluate(testRecords))
-                        predErrorAggr.append(ut.evaluate(rawTest))
-
-                    resultsTargetUtility[ut.__name__][GenModel.__name__][nr][tid] = {
-                        'TestRecordID': testRecordIDs,
-                        'Accuracy': list(mean(predErrorTargets, axis=0))
-                    }
-
-                    resultsAggUtility[ut.__name__][GenModel.__name__]['TargetID'].append(tid)
-                    resultsAggUtility[ut.__name__][GenModel.__name__]['Accuracy'].append(mean(predErrorAggr))
-
-            del synTwithoutTarget, synTwithTarget
-
-            LOGGER.info(f'Finished: Evaluation for model {GenModel.__name__}.')
-
-        for San in sanList:
-            LOGGER.info(f'Start: Evaluation for sanitiser {San.__name__}...')
-            sanOut = San.sanitise(rawTout)
-
-            for ut in utilityTasks:
-                resultsTargetUtility[ut.__name__][San.__name__][nr] = {}
-
-                predErrorTargets = []
-                predErrorAggr = []
-                for _ in range(runconfig['nSynT']):
-                    ut.train(sanOut)
-                    predErrorTargets.append(ut.evaluate(testRecords))
-                    predErrorAggr.append(ut.evaluate(rawTest))
-
-                resultsTargetUtility[ut.__name__][San.__name__][nr]['OUT'] = {
-                    'TestRecordID': testRecordIDs,
-                    'Accuracy': list(mean(predErrorTargets, axis=0))
-                }
-
-                resultsAggUtility[ut.__name__][San.__name__]['TargetID'].append('OUT')
-                resultsAggUtility[ut.__name__][San.__name__]['Accuracy'].append(mean(predErrorAggr))
-
-            for tid in targetIDs:
-                LOGGER.info(f'Target: {tid}')
-                target = targets.loc[[tid]]
-
-                rawTin = rawTout.append(target)
-                sanIn = San.sanitise(rawTin)
-
-                for ut in utilityTasks:
-                    predErrorTargets = []
-                    predErrorAggr = []
-                    for _ in range(runconfig['nSynT']):
-                        ut.train(sanIn)
-                        predErrorTargets.append(ut.evaluate(testRecords))
-                        predErrorAggr.append(ut.evaluate(rawTest))
-
-                    resultsTargetUtility[ut.__name__][San.__name__][nr][tid] = {
-                        'TestRecordID': testRecordIDs,
-                        'Accuracy': list(mean(predErrorTargets, axis=0))
-                    }
-
-                    resultsAggUtility[ut.__name__][San.__name__]['TargetID'].append(tid)
-                    resultsAggUtility[ut.__name__][San.__name__]['Accuracy'].append(mean(predErrorAggr))
-
-            del sanOut, sanIn
-
-            LOGGER.info(f'Finished: Evaluation for model {San.__name__}.')
+        LOGGER.info(f'Finished: Evaluation for model {model.__name__}.')
 
     outfile = f"ResultsUtilTargets_{dname}"
     LOGGER.info(f"Write results to {path.join(f'{args.outdir}', f'{outfile}')}")
