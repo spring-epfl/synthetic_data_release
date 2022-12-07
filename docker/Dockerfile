@@ -29,10 +29,11 @@ python3 -m pip install -r requirements.txt
 
 RUN cd / && \
 git clone https://github.com/spring-epfl/CTGAN.git && \
-git clone https://github.com/spring-epfl/synthetic_data_release.git && \
 cd CTGAN && \
 python3 -m pip install .
 
 ENV PYTHONPATH "${PYTHONPATH}:/CTGAN"
+
+COPY . /synthetic_data_release
 
 ENTRYPOINT ["/bin/bash"]
