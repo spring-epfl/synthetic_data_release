@@ -11,7 +11,6 @@ import json
 from os import mkdir, path
 from numpy import mean
 from numpy.random import choice
-from argparse import ArgumentParser
 
 from utils.datagen import load_s3_data_as_df, load_local_data_as_df
 from utils.utils import json_numpy_serialzer
@@ -26,8 +25,10 @@ simplefilter('ignore', category=DeprecationWarning)
 
 cwd = path.dirname(__file__)
 
+MODEL_NAME = 'GivenModel'
 
-def main():
+
+def main() -> None:
     argparser = ArgumentParser()
     datasource = argparser.add_mutually_exclusive_group()
     datasource.add_argument(
@@ -132,10 +133,10 @@ def main():
     ##################################
     ######### EVALUATION #############
     ##################################
-    resultsTargetUtility = {ut.__name__: {model.__name__: {}} for ut in utilityTasks}
+    resultsTargetUtility = {ut.__name__: {MODEL_NAME: {}} for ut in utilityTasks}
     resultsAggUtility = {
         ut.__name__: {
-            model.__name__: {
+            MODEL_NAME: {
                 'TargetID': [],
                 'Accuracy': []
             }
@@ -197,13 +198,13 @@ def main():
 
         LOGGER.info('Finished: Utility evaluation on Raw.')
 
-        LOGGER.info(f'Start: Evaluation for model {model.__name__}...')
+        LOGGER.info(f'Start: Evaluation for given model...')
         model.fit(rawTout)
         synTwithoutTarget = [model.generate_samples(runconfig['sizeSynT']) for _ in range(runconfig['nSynT'])]
 
         # Util evaluation for synthetic without all targets
         for ut in utilityTasks:
-            resultsTargetUtility[ut.__name__][model.__name__][nr] = {}
+            resultsTargetUtility[ut.__name__][MODEL_NAME][nr] = {}
 
             predErrorTargets = []
             predErrorAggr = []
@@ -212,13 +213,13 @@ def main():
                 predErrorTargets.append(ut.evaluate(testRecords))
                 predErrorAggr.append(ut.evaluate(rawTest))
 
-            resultsTargetUtility[ut.__name__][model.__name__][nr]['OUT'] = {
+            resultsTargetUtility[ut.__name__][MODEL_NAME][nr]['OUT'] = {
                 'TestRecordID': testRecordIDs,
                 'Accuracy': list(mean(predErrorTargets, axis=0))
             }
 
-            resultsAggUtility[ut.__name__][model.__name__]['TargetID'].append('OUT')
-            resultsAggUtility[ut.__name__][model.__name__]['Accuracy'].append(mean(predErrorAggr))
+            resultsAggUtility[ut.__name__][MODEL_NAME]['TargetID'].append('OUT')
+            resultsAggUtility[ut.__name__][MODEL_NAME]['Accuracy'].append(mean(predErrorAggr))
 
         for tid in targetIDs:
             LOGGER.info(f'Target: {tid}')
@@ -237,17 +238,17 @@ def main():
                     predErrorTargets.append(ut.evaluate(testRecords))
                     predErrorAggr.append(ut.evaluate(rawTest))
 
-                resultsTargetUtility[ut.__name__][model.__name__][nr][tid] = {
+                resultsTargetUtility[ut.__name__][MODEL_NAME][nr][tid] = {
                     'TestRecordID': testRecordIDs,
                     'Accuracy': list(mean(predErrorTargets, axis=0))
                 }
 
-                resultsAggUtility[ut.__name__][model.__name__]['TargetID'].append(tid)
-                resultsAggUtility[ut.__name__][model.__name__]['Accuracy'].append(mean(predErrorAggr))
+                resultsAggUtility[ut.__name__][MODEL_NAME]['TargetID'].append(tid)
+                resultsAggUtility[ut.__name__][MODEL_NAME]['Accuracy'].append(mean(predErrorAggr))
 
         del synTwithoutTarget, synTwithTarget
 
-        LOGGER.info(f'Finished: Evaluation for model {model.__name__}.')
+        LOGGER.info(f'Finished: Evaluation for given model.')
 
     outfile = f"ResultsUtilTargets_{dname}"
     LOGGER.info(f"Write results to {path.join(f'{args.outdir}', f'{outfile}')}")
